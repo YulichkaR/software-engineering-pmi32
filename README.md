@@ -1,4 +1,4 @@
-#Project "Faculty of Applied Mathematics and Computer Science Online Store"  
+## Prykladna-SHOP​
 This project is aimed at creating an online platform for selling items related to the Faculty of Applied Mathematics and Computer Science. The main objectives of this project include:  
   
 Project Objectives:  
