@@ -1,8 +1,7 @@
 ## Prykladna-SHOP​
-This project is aimed at creating an online platform for selling items related to the Faculty of Applied Mathematics and Computer Science. The main objectives of this project include:  
+This project is aimed at creating an online platform for selling items related to the Faculty of Applied Mathematics and Informatics of Ivan Franko National University of Lviv. The main objectives of this project include:  
   
-Project Objectives:  
-Fostering Pride and Affiliation: Our online store aims to foster a sense of pride and affiliation with the faculty by providing customers with the opportunity to purchase items that symbolize their connection to it.  
+Project Objectives: Fostering Pride and Affiliation: Our online store aims to foster a sense of pride and affiliation with the faculty by providing customers with the opportunity to purchase items that symbolize their connection to it.  
   
 Financial Support for the Faculty: A portion of the proceeds from the sale of goods in the store will be directed towards financial support for the faculty and the development of academic programs.  
   
@@ -28,4 +27,11 @@ Impersonation: There is a risk of impersonation of the store or fraudulent activ
 We commit to implementing all necessary security measures and authentication to protect our customers and their data.   
    
 This README provides a general overview of the "Faculty of Applied Mathematics and Computer Science Online Store" project.  
- For additional information and details regarding functionality, technical requirements, and usage instructions, please refer to the relevant  documentation and reference materials.   
+For additional information and details regarding functionality, technical requirements, and usage instructions, please refer to the relevant  documentation and reference materials.   
+
+Developers:
+Valerii Biloskurskyi PMI-32  
+Nazarii Seniuk PMI-32  
+Sofiia Yevush PMI-32
+Makarukha Solomiia PMI-32
+Yulia Romanyk PMI-32
