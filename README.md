@@ -32,6 +32,6 @@ For additional information and details regarding functionality, technical requir
 Developers:
 Valerii Biloskurskyi PMI-32  
 Nazarii Seniuk PMI-32  
-Sofiia Yevush PMI-32
-Makarukha Solomiia PMI-32
-Yulia Romanyk PMI-32
+Sofiia Yevush PMI-32   
+Solomiia Makarukha PMI-32   
+Yulia Romanyk PMI-32   
