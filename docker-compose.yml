@@ -1,0 +1,28 @@
+﻿services:
+  eshop.db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: eshop
+      POSTGRES_PASSWORD: eshop
+      POSTGRES_DB: EShop
+    volumes:
+      - ./volumes/eshop-db-data:/var/lib/postgresql/data
+  eshop.presentation:
+    image: eshop.presentation
+    ports:
+      - "5000:8080"
+    build:
+      context: .
+      dockerfile: EShop.Presentation/Dockerfile
+  
+  eshop.seq:
+    image: datalust/seq:latest
+    ports:
+      - "5341:5341"
+      - "8081:80"
+    environment:
+      ACCEPT_EULA: Y
+    volumes:
+      - ./volumes/seq-data:/data
