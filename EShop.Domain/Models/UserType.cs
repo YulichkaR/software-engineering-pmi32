@@ -2,9 +2,8 @@
 
 namespace EShop.Domain.Models;
 
-public class UserType
+public class UserType : BaseEntity<Guid>
 {
-    public Guid Id { get; set; }
     public string Type { get; set; }
 
     [JsonIgnore]

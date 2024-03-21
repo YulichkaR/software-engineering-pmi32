@@ -22,7 +22,7 @@ namespace EShop.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BasketItem", b =>
+            modelBuilder.Entity("BasketProduct", b =>
                 {
                     b.Property<Guid>("BasketsId")
                         .HasColumnType("uuid");
@@ -34,7 +34,7 @@ namespace EShop.Infrastructure.Migrations
 
                     b.HasIndex("ItemsId");
 
-                    b.ToTable("BasketItem");
+                    b.ToTable("BasketProduct");
                 });
 
             modelBuilder.Entity("EShop.Domain.Models.Basket", b =>
@@ -56,36 +56,6 @@ namespace EShop.Infrastructure.Migrations
                     b.ToTable("Baskets");
                 });
 
-            modelBuilder.Entity("EShop.Domain.Models.Item", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Img")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("TypeId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("Items");
-                });
-
             modelBuilder.Entity("EShop.Domain.Models.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -102,10 +72,7 @@ namespace EShop.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("OrderTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("Type")
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
@@ -118,6 +85,36 @@ namespace EShop.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("EShop.Domain.Models.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Img")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid>("ProductTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductTypeId");
+
+                    b.ToTable("Items");
                 });
 
             modelBuilder.Entity("EShop.Domain.Models.ProductType", b =>
@@ -133,6 +130,23 @@ namespace EShop.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("cb0f4e97-9090-4f0b-a8b3-9bb7a25b5f3c"),
+                            Name = "Electronics"
+                        },
+                        new
+                        {
+                            Id = new Guid("57a73fdf-e13c-4d3f-bfb8-68f81ee7326a"),
+                            Name = "Clothing"
+                        },
+                        new
+                        {
+                            Id = new Guid("1e0ba820-7dfb-444d-8619-6f6ad4a70cf1"),
+                            Name = "Books"
+                        });
                 });
 
             modelBuilder.Entity("EShop.Domain.Models.User", b =>
@@ -186,7 +200,7 @@ namespace EShop.Infrastructure.Migrations
                     b.ToTable("UserTypes");
                 });
 
-            modelBuilder.Entity("BasketItem", b =>
+            modelBuilder.Entity("BasketProduct", b =>
                 {
                     b.HasOne("EShop.Domain.Models.Basket", null)
                         .WithMany()
@@ -194,7 +208,7 @@ namespace EShop.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EShop.Domain.Models.Item", null)
+                    b.HasOne("EShop.Domain.Models.Product", null)
                         .WithMany()
                         .HasForeignKey("ItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -210,17 +224,6 @@ namespace EShop.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EShop.Domain.Models.Item", b =>
-                {
-                    b.HasOne("EShop.Domain.Models.ProductType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("EShop.Domain.Models.Order", b =>
@@ -240,6 +243,17 @@ namespace EShop.Infrastructure.Migrations
                     b.Navigation("Basket");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EShop.Domain.Models.Product", b =>
+                {
+                    b.HasOne("EShop.Domain.Models.ProductType", "Type")
+                        .WithMany()
+                        .HasForeignKey("ProductTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("EShop.Domain.Models.User", b =>

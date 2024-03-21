@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EShop.Domain.Models;
 
-public class User
+public class User : BaseEntity<Guid>
 {
-    public Guid Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     [EmailAddress]
