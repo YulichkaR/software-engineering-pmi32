@@ -1,0 +1,33 @@
+﻿@model ProductViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h1>Product Details</h1>
+
+<div class="row">
+        <div class="col-md-6">
+            <div class="card" style="max-width: fit-content">
+                @if (Model.Img is not null)
+                {
+                    <img src="~/images/products/@Model.Img" class="card-img-top" style="max-height: 500px; max-width: min-content" alt="">
+                }
+                else
+                {
+                    <h3>No image</h3>
+                }
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Description</h5>
+                    <p class="card-text">Price: $@Model.Price</p>
+                    <p class="card-text">Quantity: @Model.Quantity</p>
+                    <p class="card-text">Product Type: @Model.ProductType</p>
+                </div>
+            </div>
+        </div>
+    </div>

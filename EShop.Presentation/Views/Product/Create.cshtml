@@ -1,0 +1,42 @@
+﻿@model CreateProductViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h1>Create New Product</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="Price">Price:</label>
+        <input type="number" class="form-control" id="Price" name="Price" value="@Model.Price">
+    </div>
+    <div class="form-group">
+        <label for="Quantity">Quantity:</label>
+        <input type="number" class="form-control" id="Quantity" name="Quantity" value="@Model.Quantity">
+    </div>
+    <div class="form-group">
+        <label for="Description">Description:</label>
+        <input type="text" class="form-control" id="Description" name="Description" value="@Model.Description">
+    </div>
+    <div class="form-group">
+        <label for="Image">Image:</label>
+        <input type="file" class="form-control-file" id="Image" name="Image">
+    </div>
+    
+    @* <div class="form-group"> *@
+    @*     <label for="TypeId">Product Type:</label> *@
+    @*     <select class="form-control" id="TypeId" name="TypeId" asp-for="@Model.ProductTypeId" asp-items="@Model.ProductTypes"> *@
+    @*         $1$ <option value="">Select Product Type</option> #1# *@
+    @*         $1$ @foreach (var productType in Model.ProductTypes) #1# *@
+    @*         $1$ { #1# *@
+    @*         $1$     <option value="@productType.Id">@productType.Name</option> #1# *@
+    @*         $1$ } #1# *@
+    @*     </select> *@
+    @* </div> *@
+    @Html.DropDownListFor(m => m.ProductTypeId, Model.ProductTypes, new { @class = "form-control" })
+    <!-- Add more fields as needed -->
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

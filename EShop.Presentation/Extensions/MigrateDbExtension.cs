@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using EShop.Infrastructure.Database;
+﻿using EShop.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Presentation.Extensions;

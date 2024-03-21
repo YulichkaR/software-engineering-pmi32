@@ -1,0 +1,45 @@
+﻿@model List<OrderListViewModel>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+
+<h1 class="mb-4">Order List</h1>
+
+@if(!Model.Any())
+{
+    <p>No orders found.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Time</th>
+                    <th>Address</th>
+                    <th>Total Price</th>
+                    <th>Total Items Count</th>
+                    <th>Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.OrderTime</td>
+                        <td>@order.Address</td>
+                        <td>$@order.TotalPrice</td>
+                        <td>@order.TotalItemsCount</td>
+                        <td>@order.OrderStatus</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
