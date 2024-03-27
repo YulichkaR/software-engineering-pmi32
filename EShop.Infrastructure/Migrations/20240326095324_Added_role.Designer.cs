@@ -3,6 +3,7 @@ using System;
 using EShop.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EShop.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240326095324_Added_role")]
+    partial class Added_role
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,17 +137,17 @@ namespace EShop.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("620abcc2-c39b-4d81-802f-86b586fb556c"),
+                            Id = new Guid("2a986b9c-612b-4b42-92a6-568943879c83"),
                             Name = "Electronics"
                         },
                         new
                         {
-                            Id = new Guid("3d1b52a8-265b-481e-a2e2-2968e7429df4"),
+                            Id = new Guid("60ef0a23-ae06-4241-b51a-73c56ffb2382"),
                             Name = "Clothing"
                         },
                         new
                         {
-                            Id = new Guid("05c98ba2-1c6c-4528-a6c2-184e01f02def"),
+                            Id = new Guid("0a059ae5-0172-4d30-87cf-20f542c4f7d1"),
                             Name = "Books"
                         });
                 });
@@ -212,6 +215,23 @@ namespace EShop.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("7a0ae26d-76cb-4c51-a9ea-f3b1873813b9"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fce14cfe-e2c4-49bd-ab1a-c724bf93d6f4",
+                            Email = "admin@mail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@MAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBoAogcJTExNy/H/bD4Mq/9JAjPxP72d4Vylfw+RBDeFyt8znLD+98T5ZWt1+F2jjA==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("EShop.Domain.Models.UserType", b =>
@@ -243,14 +263,14 @@ namespace EShop.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c57b7d8b-c4be-4097-b34c-a5a6f5bcc231"),
+                            Id = new Guid("d203dd8c-a6fe-4c00-9470-1019d098c00a"),
                             ConcurrencyStamp = "ADMIN",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("dcde34ce-7ef7-40af-a07b-b4c0878b65e0"),
+                            Id = new Guid("2c0a2d8e-2481-4974-bcb0-747d1ef86896"),
                             ConcurrencyStamp = "USER",
                             Name = "User",
                             NormalizedName = "USER"
@@ -341,6 +361,13 @@ namespace EShop.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("7a0ae26d-76cb-4c51-a9ea-f3b1873813b9"),
+                            RoleId = new Guid("d203dd8c-a6fe-4c00-9470-1019d098c00a")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>

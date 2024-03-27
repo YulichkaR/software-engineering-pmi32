@@ -1,0 +1,168 @@
+﻿using AutoMapper;
+using EShop.Application.Basket;
+using EShop.Application.Order;
+using EShop.Domain.Enums;
+using EShop.Domain.Models;
+using EShop.Domain.Specification;
+using Microsoft.AspNetCore.Identity;
+
+namespace EShop.UnitTests;
+
+public class OrderTests
+{
+    private readonly OrderService _orderServices;
+    private readonly IOrderRepository _orderRepository;
+    private readonly IBasketRepository _basketRepository;
+    private readonly UserManager<User> _userManager;
+    private readonly IMapper _mapper;
+    public OrderTests()
+    {
+        _basketRepository = Substitute.For<IBasketRepository>();
+        _orderRepository = Substitute.For<IOrderRepository>();
+        _mapper = Substitute.For<IMapper>();
+        var userStore = Substitute.For<IUserStore<User>>();
+        _userManager = Substitute.For<UserManager<User>>(userStore, null, null, null, null, null, null, null, null);
+        _orderServices = new OrderService(_orderRepository, _userManager, _basketRepository, _mapper);
+    }
+    
+    [Fact]
+    public async Task GetOrders_ShouldReturnListOfOrders()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        List<Order> orders =
+        [
+            new()
+            {
+                Id = Guid.NewGuid(), 
+                OrderTime = DateTimeOffset.Now,
+                Address = "Address",
+                UserId = Guid.NewGuid(),
+                User = new User
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Name",
+                    Email = "Email",
+                    PasswordHash = "Password",
+                },
+                Status = Status.Confirmed,
+                BasketId = basketId,
+                Basket = new Basket
+                {
+                    Id = basketId,
+                    Items = new List<Product>
+                    {
+                        new() { Price = 10, Quantity = 2 },
+                        new() { Price = 20, Quantity = 3 }
+                    }
+                }
+            },
+        ];
+        var ordersDto = orders.ConvertAll(o => new GetAllOrdersDto
+        {
+            OrderTime = o.OrderTime,
+            Address = o.Address,
+            Id = o.Id,
+            Status = o.Status,
+            TotalItemCount = o.Basket.Items.Sum(i => i.Quantity),
+            TotalPrice = o.Basket.Items.Sum(i => i.Price * i.Quantity)
+        });
+        _orderRepository.GetAllBySpecification(Arg.Any<GetAllOrdersSpecification>()).Returns(Task.FromResult(orders));
+        
+        // Act
+        List<GetAllOrdersDto> result = await _orderServices.GetAllOrdersAsync();
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(ordersDto);
+    }
+    
+    [Fact]
+    public async Task GetOrdersByUserId_ShouldReturnListOfOrders()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var basketId = Guid.NewGuid();
+        List<Order> orders =
+        [
+            new()
+            {
+                Id = Guid.NewGuid(),
+                BasketId = basketId, 
+                OrderTime = DateTimeOffset.Now, Basket = new Basket
+                {
+                    Id = basketId,
+                    Items = new List<Product>
+                    {
+                        new() { Price = 10, Quantity = 2 },
+                        new() { Price = 20, Quantity = 3 }
+                    }
+                }
+            },
+        ];
+        _orderRepository.GetAllBySpecification(Arg.Any<GetUserOrdersSpecification>()).Returns(Task.FromResult(orders));
+        
+        // Act
+        List<GetAllOrdersDto> result = await _orderServices.GetOrdersByUserIdAsync(userId);
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(orders.Count);
+    }
+    
+    
+    [Fact]
+    public async Task CreateOrder_ShouldReturnOrder()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var orderDto = new CreateOrderDto
+        {
+            BasketId = Guid.NewGuid(),
+            UserId =userId
+        };
+        var user = new User { Id = userId, UserName = "Name", Email = "Email", PasswordHash = "Password" };
+        var order = new Order { Id = Guid.NewGuid(), OrderTime = DateTimeOffset.Now };
+        _mapper.Map<Order>(orderDto).Returns(order);
+        _orderRepository.Create(order).Returns(Task.FromResult(order));
+        _basketRepository.AnyAsync(Arg.Any<Guid>()).Returns(Task.FromResult(true));
+        _userManager.FindByIdAsync(Arg.Any<string>())!.Returns(Task.FromResult(user));
+        
+        // Act
+        Func<Task> act = async () =>  await _orderServices.CreateOrderAsync(orderDto);
+        
+        // Assert
+        await act.Should().NotThrowAsync<Exception>();
+    }
+    
+    
+    [Fact]
+    public async Task Delete_WhenOrderNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        _orderRepository.AnyAsync(Arg.Any<Guid>()).Returns(Task.FromResult(false));
+        
+        // Act
+        Func<Task> act = async () => await _orderServices.DeleteOrder(id);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>();
+    }
+
+    [Fact]
+    public async Task Delete_WhenOrderExists_ShouldNotThrowException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        _orderRepository.AnyAsync(Arg.Any<Guid>()).Returns(Task.FromResult(true));
+
+        // Act
+        Func<Task> act = async () => await _orderServices.DeleteOrder(id);
+
+        // Assert
+        await act.Should().NotThrowAsync<Exception>();
+    }
+    
+    
+}
