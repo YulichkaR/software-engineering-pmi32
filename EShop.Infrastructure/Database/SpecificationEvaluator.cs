@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Infrastructure.Database;
 
-public class SpecificationEvaluator<TKey, TEntity> where TEntity : BaseEntity<TKey>
+public class SpecificationEvaluator<TKey, TEntity> where TEntity : class,IBaseEntity<TKey>
 {
     public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery, Specification<TEntity> spec)
     {

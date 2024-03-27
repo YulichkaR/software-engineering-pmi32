@@ -1,6 +1,7 @@
 ﻿namespace EShop.Domain.Models;
 
-public class ProductType : BaseEntity<Guid>
+public class ProductType : IBaseEntity<Guid>
 {
     public string Name { get; set; }
+    public Guid Id { get; set; }
 }

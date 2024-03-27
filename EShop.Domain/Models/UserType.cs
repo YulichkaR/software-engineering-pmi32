@@ -1,11 +1,8 @@
 ﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 namespace EShop.Domain.Models;
 
-public class UserType : BaseEntity<Guid>
+public class UserType : IdentityRole<Guid>, IBaseEntity<Guid>
 {
-    public string Type { get; set; }
-
-    [JsonIgnore]
-    public ICollection<User> Users { get; set; }
 }

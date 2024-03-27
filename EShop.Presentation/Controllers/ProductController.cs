@@ -1,6 +1,7 @@
 ﻿using EShop.Application.Product;
 using EShop.Application.ProductType;
 using EShop.Presentation.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -17,7 +18,7 @@ public class ProductController : Controller
         _productTypeService = productTypeService;
     }
     // GET
-    public async Task<IActionResult> Index(int page = 1, int pageSize = 2)
+    public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
     {
         var products = await _productService.GetProducts(page,pageSize);
         var productCount = await _productService.GetTotalProducts();
@@ -44,7 +45,8 @@ public class ProductController : Controller
         };
         return View(productVm);
     }
-    //Create - page
+    //Create
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create()
     {
         var model = new CreateProductViewModel();
@@ -58,6 +60,7 @@ public class ProductController : Controller
         return View(model);
     }
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(CreateProductViewModel model)
     {
         if (!ModelState.IsValid)

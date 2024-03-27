@@ -25,6 +25,10 @@ public class ProductTypeService : IProductTypeService
 
     public async Task Delete(Guid id)
     {
+        if (!await _productTypeRepository.AnyAsync(id))
+        {
+            throw new Exception("Product type not found");
+        }
         await _productTypeRepository.Delete(id);
     }
 }

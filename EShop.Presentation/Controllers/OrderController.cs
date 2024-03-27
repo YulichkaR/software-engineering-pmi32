@@ -1,10 +1,12 @@
-﻿using EShop.Application.Order;
-using EShop.Domain.Enums;
+﻿using System.Security.Claims;
+using EShop.Application.Order;
 using EShop.Presentation.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EShop.Presentation.Controllers;
 
+[Authorize]
 public class OrderController : Controller
 {
     private readonly IOrderService _orderService;
@@ -16,7 +18,17 @@ public class OrderController : Controller
     // GET
     public async Task<IActionResult> Index()
     {
-        var orders = await _orderService.GetAllOrdersAsync();
+        var roleOfUser = User.FindFirst(ClaimTypes.Role)?.Value;
+        var orders = new List<GetAllOrdersDto>();
+        if (roleOfUser == "Admin")
+        {
+            orders = await _orderService.GetAllOrdersAsync();
+        }
+        else
+        {
+            var userId =  User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            orders = await _orderService.GetOrdersByUserIdAsync(Guid.Parse(userId));
+        }
         var orderViewModels = orders.ConvertAll(order => new OrderListViewModel
         {
             Id = order.Id,
@@ -26,18 +38,6 @@ public class OrderController : Controller
             TotalItemsCount = order.TotalItemCount,
             OrderStatus = order.Status
         });
-        var mockedOrderViewModels = new List<OrderListViewModel>
-        {
-            new OrderListViewModel
-            {
-                Id = Guid.NewGuid(),
-                OrderTime = DateTimeOffset.Now,
-                Address = "Test Address",
-                TotalPrice = 100,
-                TotalItemsCount = 2,
-                OrderStatus = Status.Confirmed
-            }
-        };
-        return View(mockedOrderViewModels);
+        return View(orderViewModels);
     }
 }

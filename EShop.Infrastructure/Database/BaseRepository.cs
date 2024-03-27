@@ -7,7 +7,7 @@ namespace EShop.Infrastructure.Database;
 
 public class BaseRepository<TKey, TEntity, TContext> : 
     IRepository<TKey, TEntity>
-    where TEntity : BaseEntity<TKey>
+    where TEntity : class, IBaseEntity<TKey> 
     where TContext : DbContext
 {
     protected readonly TContext _dbContext;

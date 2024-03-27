@@ -2,7 +2,7 @@
 
 namespace EShop.Domain.Models;
 
-public class Order : BaseEntity<Guid>
+public class Order : IBaseEntity<Guid>
 {
     public DateTimeOffset OrderTime { get; set; }
     public Status Status { get; set; }
@@ -11,4 +11,5 @@ public class Order : BaseEntity<Guid>
     public Guid UserId { get; set; }
     public Basket Basket { get; set; }
     public User User { get; set; }
+    public Guid Id { get; set; }
 }

@@ -1,12 +1,19 @@
-﻿@model ProductListVewModel
+﻿@using EShop.Domain.Models
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@model ProductListVewModel
+@inject SignInManager<User> SignInManager
 
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
-<div class="text-center">
-    <a href="@Url.Action("Create", "Product")" class="btn btn-success">Create New Product</a>
-</div>
+@if (SignInManager.IsSignedIn(User) && User.FindFirst(ClaimTypes.Role) != null && User.FindFirst(ClaimTypes.Role)!.Value.Equals("Admin"))
+{
+    <div class="text-end">
+        <a href="@Url.Action("Create", "Product")" class="btn btn-success">Create New Product</a>
+    </div>
+}
 <h1>Product List</h1>
 @if(Model.Products.Count == 0)
 {

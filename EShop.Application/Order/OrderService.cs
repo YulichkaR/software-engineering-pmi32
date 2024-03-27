@@ -1,16 +1,23 @@
 ﻿using AutoMapper;
+using EShop.Application.Basket;
+using EShop.Application.User;
 using EShop.Domain.Specification;
+using Microsoft.AspNetCore.Identity;
 
 namespace EShop.Application.Order;
 
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _repository;
+    private readonly UserManager<Domain.Models.User> _userManager;
+    private readonly IBasketRepository _basketRepository;
     private readonly IMapper _mapper;
 
-    public OrderService(IOrderRepository repository, IMapper mapper)
+    public OrderService(IOrderRepository repository, UserManager<Domain.Models.User> userManager, IBasketRepository basketRepository,IMapper mapper)
     {
         _repository = repository;
+        _userManager = userManager;
+        _basketRepository = basketRepository;
         _mapper = mapper;
     }
 
@@ -31,14 +38,39 @@ public class OrderService : IOrderService
         return getAllOrdersDto;
     }
 
-    public async Task<List<Domain.Models.Order>> GetOrdersByUserIdAsync(Guid userId)
+    public async Task<List<GetAllOrdersDto>> GetOrdersByUserIdAsync(Guid userId)
     {
-        return await _repository.GetAllBySpecification(new GetUserOrdersSpecification(userId));
+        var orders = await _repository.GetAllBySpecification(new GetUserOrdersSpecification(userId));
+        var getAllOrdersDto = orders.ConvertAll(o => new GetAllOrdersDto
+        {
+            OrderTime = o.OrderTime,
+            Address = o.Address,
+            Id = o.Id,
+            Status = o.Status,
+            TotalItemCount = o.Basket.Items.Sum(i => i.Quantity),
+            TotalPrice = o.Basket.Items.Sum(i => i.Price * i.Quantity)
+        });
+        return getAllOrdersDto;
     }
 
-    public Task CreateOrderAsync(Guid userId, Guid basketId, string address)
+    public async Task CreateOrderAsync(CreateOrderDto createOrderDto)
     {
-        throw new NotImplementedException();
+        await ThrowIfIncorrectParameters(createOrderDto.UserId, createOrderDto.BasketId);
+        var order = _mapper.Map<Domain.Models.Order>(createOrderDto);
+        await _repository.Create(order);
+    }
+
+    private async Task ThrowIfIncorrectParameters(Guid userId, Guid basketId)
+    {
+        if(await _userManager.FindByIdAsync(userId.ToString()) is null)
+        {
+            throw new Exception("User not found");
+        }
+
+        if (!await _basketRepository.AnyAsync(basketId))
+        { 
+            throw new Exception("Basket not found");
+        }
     }
 
     public async Task DeleteOrder(Guid orderId)

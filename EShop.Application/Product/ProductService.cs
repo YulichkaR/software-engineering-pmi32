@@ -62,7 +62,7 @@ public class ProductService : IProductService
         var product = await _repository.GetById(id);
         if (product == null)
         {
-            return false;
+            throw new Exception("Product not found");
         }
         await _repository.Delete(id);
         return true;

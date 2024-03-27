@@ -2,8 +2,9 @@
 
 namespace EShop.Domain.Models;
 
-public class Product : BaseEntity<Guid>
+public class Product : IBaseEntity<Guid>
 {
+    public Guid Id { get; set; }
     public decimal Price { get; set; }
     public int Quantity { get; set; }
     public string Description { get; set; }
@@ -14,4 +15,5 @@ public class Product : BaseEntity<Guid>
     public ProductType Type { get; set; }
     [JsonIgnore]
     public ICollection<Basket> Baskets { get; set; }
+
 }

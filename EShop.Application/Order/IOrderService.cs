@@ -3,7 +3,7 @@
 public interface IOrderService
 {
     Task<List<GetAllOrdersDto>> GetAllOrdersAsync();
-    Task<List<Domain.Models.Order>> GetOrdersByUserIdAsync(Guid userId);
-    Task CreateOrderAsync(Guid userId, Guid basketId, string address);
+    Task<List<GetAllOrdersDto>> GetOrdersByUserIdAsync(Guid userId);
+    Task CreateOrderAsync(CreateOrderDto createOrderDto);
     Task DeleteOrder (Guid orderId);
 }
