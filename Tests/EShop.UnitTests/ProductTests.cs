@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using AutoMapper;
 using EShop.Application.Product;
+using EShop.Domain.Specification;
 using Microsoft.AspNetCore.Http;
 
 namespace EShop.UnitTests;
@@ -26,9 +27,9 @@ public class ProductTests
             new() { Id = Guid.NewGuid(), Description = "Product1" },
             new() { Id = Guid.NewGuid(), Description = "Product2" }
         };
-        _productRepository.GetAll().Returns(Task.FromResult(products));
         int page = 1;
         int pageSize = 10;
+        _productRepository.GetAllBySpecification(Arg.Any<GetPagedProductsSpecification>()).Returns(Task.FromResult(products));
         
         // Act
         List<Domain.Models.Product> result = await _productServices.GetProducts(page, pageSize);
@@ -131,7 +132,7 @@ public class ProductTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        _productRepository.AnyAsync(Arg.Any<Guid>()).Returns(Task.FromResult(true));
+        _productRepository.GetById(Arg.Any<Guid>())!.Returns(Task.FromResult( new Domain.Models.Product { Id = id, Description = "Product1" }));
         
         // Act
         Func<Task> act = async () => await _productServices.DeleteProduct(id);
@@ -145,15 +146,16 @@ public class ProductTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var product = new Domain.Models.Product { Id = id, Description = "Product1" };
-        _productRepository.GetById(id)!.Returns(Task.FromResult(product));
-        
+        var product = new Domain.Models.Product { Id = id, Description = "Product1", ProductTypeId = Guid.NewGuid(), Baskets = []};
+        var resultProduct = new GetProductDto { Id = id, Description = "Product1" };
+        _productRepository.GetBySpecification(Arg.Any<GetProductDetailsSpecification>())!.Returns(Task.FromResult(product));
+        _mapper.Map<GetProductDto>(product).Returns(resultProduct);
         // Act
         var result = await _productServices.GetProductById(id);
         
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(product);
+        result.Should().BeEquivalentTo(resultProduct);
     }
     
     [Fact]
