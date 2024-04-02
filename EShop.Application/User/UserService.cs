@@ -38,8 +38,8 @@ public class UserService : IUserService
         var result = users.ConvertAll(u => new UserDto
         {
             Id = u.Id,
-            UserName = u.UserName,
-            Email = u.Email,
+            UserName = u.UserName ?? throw new InvalidOperationException(),
+            Email = u.Email ?? throw new InvalidOperationException(),
             UserType = userRolesDictionary[u.Id]
         });
         return result;

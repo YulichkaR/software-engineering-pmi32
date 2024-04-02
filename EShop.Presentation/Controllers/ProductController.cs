@@ -1,6 +1,7 @@
 ﻿using EShop.Application.Product;
 using EShop.Application.ProductType;
 using EShop.Presentation.Models;
+using EShop.Presentation.Models.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,7 +18,7 @@ public class ProductController : Controller
         _productService = productService;
         _productTypeService = productTypeService;
     }
-    // GET
+
     public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
     {
         var products = await _productService.GetProducts(page,pageSize);
@@ -31,12 +32,13 @@ public class ProductController : Controller
         };
         return View(viewModel);
     }
-    //GET PRODUCT 
+
     public async Task<IActionResult> GetProduct(Guid id)
     {
         var product = await _productService.GetProductById(id);
         var productVm = new ProductViewModel
         {
+            Id = product.Id,
             Price = product.Price,
             Quantity = product.Quantity,
             Description = product.Description,
@@ -75,10 +77,55 @@ public class ProductController : Controller
             Quantity = model.Quantity,
             Description = model.Description,
             ProductTypeId = model.ProductTypeId,
-            Img = img.FileName,
             ImgFile = img
         };
-        var product = await _productService.CreateProduct(productDto);
+        await _productService.CreateProduct(productDto);
+        return RedirectToAction("Index");
+    }
+    //Update
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Update(Guid id)
+    {
+        var product = await _productService.GetProductById(id);
+        var model = new UpdateProductViewModel
+        {
+            Id = product.Id,
+            Price = product.Price,
+            Quantity = product.Quantity,
+            Description = product.Description,
+            ProductTypeId = product.Type.Id
+        };
+        var productTypes = await _productTypeService.GetProductTypes();
+        model.ProductTypes = productTypes.ConvertAll(pt => new SelectListItem
+        {
+            Value = pt.Id.ToString(),
+            Text = pt.Name
+        });
+
+        return View(model);
+    }
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Update(UpdateProductViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction(nameof(Update));
+        }
+        var productDto = new UpdateProductDto
+        {
+            Id = model.Id,
+            Price = model.Price,
+            Quantity = model.Quantity,
+            Description = model.Description,
+            ProductTypeId = model.ProductTypeId
+        };
+        var img = HttpContext.Request.Form.Files.FirstOrDefault();
+        if (img is not null)
+        {
+            productDto.ImgFile = img;
+        }
+        await _productService.UpdateProduct(model.Id, productDto);
         return RedirectToAction("Index");
     }
 }

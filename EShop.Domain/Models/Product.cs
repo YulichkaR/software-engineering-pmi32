@@ -7,13 +7,13 @@ public class Product : IBaseEntity<Guid>
     public Guid Id { get; set; }
     public decimal Price { get; set; }
     public int Quantity { get; set; }
-    public string Description { get; set; }
-    public string Img { get; set; }
+    public string Description { get; set; } = null!;
+    public string Img { get; set; } = null!;
     public Guid ProductTypeId { get; set; }
     
     [JsonIgnore]
-    public ProductType Type { get; set; }
+    public ProductType Type { get; set; } = null!;
     [JsonIgnore]
-    public ICollection<Basket> Baskets { get; set; }
+    public ICollection<Basket> Baskets { get; set; } = [];
 
 }

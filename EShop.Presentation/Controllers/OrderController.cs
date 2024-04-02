@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using EShop.Application.Order;
 using EShop.Presentation.Models;
+using EShop.Presentation.Models.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -4,8 +4,11 @@ using EShop.Infrastructure;
 using EShop.Infrastructure.Database;
 using EShop.Presentation.Extensions;
 using Serilog;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);

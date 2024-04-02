@@ -8,9 +8,7 @@ public class Basket : IBaseEntity<Guid>
     public Guid Id { get; set; }
     public decimal TotalPrice { get; set; }
     public Guid UserId { get; set; }
-    public User User { get; set; }
-    
-    [JsonIgnore]
-    public ICollection<Product> Items { get; set; }
+    public User User { get; set; } = null!;
 
+    [JsonIgnore] public ICollection<Product> Items { get; set; } = [];
 }

@@ -1,6 +1,7 @@
 ﻿using EShop.Application.User;
 using EShop.Domain.Models;
 using EShop.Presentation.Models;
+using EShop.Presentation.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

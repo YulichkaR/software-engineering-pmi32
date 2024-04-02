@@ -1,4 +1,4 @@
-﻿@model List<UserListViewModel>
+﻿@model List<EShop.Presentation.Models.User.UserListViewModel>
 
 @{
     ViewBag.Title = "title";
@@ -31,9 +31,17 @@ else
                     <td>@user.Email</td>
                     <td>@user.UserType</td>
                     <td>
-                    <a 
-                        class="btn btn-primary">Edit</a>
-                        <a asp-controller="User" asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger">Delete</a>
+                    <a class="btn btn-primary">Edit</a>
+                    @{
+                        if(user.UserType is "Admin")
+                        {
+                            <button disabled class="btn btn-danger" >Delete</button>
+                        }
+                        else
+                        {
+                            <a asp-controller="User" asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger" >Delete</a>
+                        }
+                    }
                 </tr>
             }
         </tbody>

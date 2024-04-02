@@ -48,6 +48,10 @@ public class ProductService : IProductService
             throw new Exception("Product not found");
         }
         var updatedProduct = _mapper.Map(product, existingProduct);
+        if(product.ImgFile is not null)
+        {
+            await UploadImage(product, updatedProduct);
+        }
         await _repository.Update(updatedProduct);
         return updatedProduct;
     }

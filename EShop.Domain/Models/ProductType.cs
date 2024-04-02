@@ -2,6 +2,6 @@
 
 public class ProductType : IBaseEntity<Guid>
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
     public Guid Id { get; set; }
 }

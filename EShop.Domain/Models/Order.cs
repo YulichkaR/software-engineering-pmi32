@@ -6,10 +6,10 @@ public class Order : IBaseEntity<Guid>
 {
     public DateTimeOffset OrderTime { get; set; }
     public Status Status { get; set; }
-    public string Address { get; set; }
+    public string Address { get; set; } = null!;
     public Guid BasketId { get; set; }
     public Guid UserId { get; set; }
-    public Basket Basket { get; set; }
-    public User User { get; set; }
+    public Basket Basket { get; set; } = null!;
+    public User User { get; set; } = null!;
     public Guid Id { get; set; }
 }
