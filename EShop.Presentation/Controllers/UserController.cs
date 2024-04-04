@@ -35,9 +35,38 @@ public class UserController : Controller
         return View(usersVm);
     }
 
-    public IActionResult Edit()
+    public async Task<IActionResult> Edit(Guid Id)
     {
-        throw new NotImplementedException();
+        var user = await _userService.GetUserById(Id);
+        var userVm = new UserUpdateViewModel
+        {
+            Id = user.Id,
+            Email = user.Email,
+        };
+        return View(userVm);
+    }
+    [HttpPost]
+    public async Task<IActionResult> Edit(UserUpdateViewModel userUpdateViewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(userUpdateViewModel);
+        }
+        var userDto = new UserUpdateDto
+        {
+            Id = userUpdateViewModel.Id,
+            Email = userUpdateViewModel.Email,
+            Password = userUpdateViewModel.Password
+        };
+        try
+        {
+            await _userService.UpdateUser(userDto);
+        } catch (Exception e)
+        {
+            ModelState.AddModelError(string.Empty, e.Message);
+            return View(userUpdateViewModel);
+        }
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> Delete(Guid id)

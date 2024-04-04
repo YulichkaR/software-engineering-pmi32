@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using EShop.Application.Basket;
 using EShop.Application.Order;
 using EShop.Application.Product;
 using EShop.Application.ProductType;
@@ -16,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<IProductTypeService, ProductTypeService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IBasketService, BasketService>();
         return services;
     }  
 }

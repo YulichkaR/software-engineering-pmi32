@@ -128,4 +128,12 @@ public class ProductController : Controller
         await _productService.UpdateProduct(model.Id, productDto);
         return RedirectToAction("Index");
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("id")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _productService.DeleteProduct(id);
+        return RedirectToAction("Index");
+    }
 }

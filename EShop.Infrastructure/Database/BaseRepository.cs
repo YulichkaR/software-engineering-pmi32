@@ -16,30 +16,30 @@ public class BaseRepository<TKey, TEntity, TContext> :
     {
         _dbContext = dbContext;
     }   
-    public async Task<TEntity?> GetById(TKey id)
+    public async Task<TEntity?> GetByIdAsync(TKey id)
     {
         return await _dbContext.Set<TEntity>()
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id!.Equals(id)); 
     }
 
-    public Task<List<TEntity>> GetAllBySpecification(Specification<TEntity> spec)
+    public Task<List<TEntity>> GetAllBySpecificationAsync(Specification<TEntity> spec)
     {
         return ApplySpecification(spec).ToListAsync();
     }
 
-    public Task<TEntity?> GetBySpecification(Specification<TEntity> spec)
+    public Task<TEntity?> GetBySpecificationAsync(Specification<TEntity> spec)
     {
         return ApplySpecification(spec).FirstOrDefaultAsync();
     }
 
 
-    public Task<List<TEntity>> GetAll()
+    public Task<List<TEntity>> GetAllAsync()
     {
         return _dbContext.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<TEntity> Create(TEntity entity)
+    public async Task<TEntity> CreateAsync(TEntity entity)
     {
         await _dbContext.Set<TEntity>().AddAsync(entity);
         await _dbContext.SaveChangesAsync();
@@ -52,16 +52,16 @@ public class BaseRepository<TKey, TEntity, TContext> :
         return _dbContext.Set<TEntity>().AnyAsync(e => e.Id!.Equals(id));
     }
 
-    public async Task Update(TEntity entity)
+    public async Task UpdateAsync(TEntity entity)
     {
         _dbContext.Set<TEntity>().Update(entity);
         await _dbContext.SaveChangesAsync();
         
     }
 
-    public async Task Delete(TKey id)
+    public async Task DeleteAsync(TKey id)
     {
-        var entity = await GetById(id);
+        var entity = await GetByIdAsync(id);
         if (entity is null)
         {
             return;

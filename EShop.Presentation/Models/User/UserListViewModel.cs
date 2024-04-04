@@ -1,6 +1,4 @@
-﻿using EShop.Domain.Models;
-
-namespace EShop.Presentation.Models;
+﻿namespace EShop.Presentation.Models.User;
 
 public class UserListViewModel
 {

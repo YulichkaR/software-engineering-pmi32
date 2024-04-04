@@ -16,7 +16,7 @@ public class ProductService : IProductService
     
     public async Task<GetProductDto> GetProductById(Guid id)
     {
-        var product = await _repository.GetBySpecification(new GetProductDetailsSpecification(id));
+        var product = await _repository.GetBySpecificationAsync(new GetProductDetailsSpecification(id));
         if (product == null)
         {
             throw new Exception("Product not found");
@@ -28,7 +28,7 @@ public class ProductService : IProductService
 
     public async Task<List<Domain.Models.Product>> GetProducts(int page, int pageSize)
     {
-        return await _repository.GetAllBySpecification(new GetPagedProductsSpecification(page, pageSize));
+        return await _repository.GetAllBySpecificationAsync(new GetPagedProductsSpecification(page, pageSize));
     }
     
     public async Task<Domain.Models.Product> CreateProduct(CreateProductDto product)
@@ -37,12 +37,12 @@ public class ProductService : IProductService
         //file upload
         await UploadImage(product, newProduct);
         
-        return await _repository.Create(newProduct);
+        return await _repository.CreateAsync(newProduct);
     }
 
     public async Task<Domain.Models.Product> UpdateProduct(Guid id, UpdateProductDto product)
     {
-        var existingProduct = await _repository.GetById(id);
+        var existingProduct = await _repository.GetByIdAsync(id);
         if (existingProduct == null)
         {
             throw new Exception("Product not found");
@@ -52,7 +52,7 @@ public class ProductService : IProductService
         {
             await UploadImage(product, updatedProduct);
         }
-        await _repository.Update(updatedProduct);
+        await _repository.UpdateAsync(updatedProduct);
         return updatedProduct;
     }
 
@@ -63,15 +63,16 @@ public class ProductService : IProductService
 
     public async Task<bool> DeleteProduct(Guid id)
     {
-        var product = await _repository.GetById(id);
+        var product = await _repository.GetByIdAsync(id);
         if (product == null)
         {
             throw new Exception("Product not found");
         }
-        await _repository.Delete(id);
+        await _repository.DeleteAsync(id);
+        DeleteProductImage(product);
         return true;
     }
-    
+
     private async Task UploadImage(CreateProductDto product, Domain.Models.Product newProduct)
     {
         if (product.ImgFile is not null)
@@ -87,6 +88,15 @@ public class ProductService : IProductService
                 await product.ImgFile?.CopyToAsync(fileStream)!;
             }
             newProduct.Img = fileName;
+        }
+    }
+    
+    private void DeleteProductImage(Domain.Models.Product product)
+    {
+        var imgPath = Path.Combine(_uploadPath, product.Img);
+        if (File.Exists(imgPath))
+        {
+            File.Delete(imgPath);
         }
     }
 }

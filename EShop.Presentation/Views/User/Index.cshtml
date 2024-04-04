@@ -31,14 +31,15 @@ else
                     <td>@user.Email</td>
                     <td>@user.UserType</td>
                     <td>
-                    <a class="btn btn-primary">Edit</a>
                     @{
                         if(user.UserType is "Admin")
                         {
+                            <button disabled class="btn btn-primary" >Edit</button>
                             <button disabled class="btn btn-danger" >Delete</button>
                         }
                         else
                         {
+                            <a href=@Url.Action("Edit", "User", new { id = user.Id }) class="btn btn-primary">Edit</a>
                             <a asp-controller="User" asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger" >Delete</a>
                         }
                     }

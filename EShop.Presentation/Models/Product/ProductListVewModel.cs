@@ -1,4 +1,4 @@
-﻿namespace EShop.Presentation.Models;
+﻿namespace EShop.Presentation.Models.Product;
 
 public class ProductListVewModel
 {

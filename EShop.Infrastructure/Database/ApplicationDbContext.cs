@@ -20,13 +20,12 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Models.User, UserTy
             new() {Id = Guid.NewGuid(), Name = "Books"}
         };
         modelBuilder.Entity<Domain.Models.ProductType>().HasData(productTypes);
-        var adminRoleId = Guid.NewGuid();
         modelBuilder.Entity<UserType>().HasData(new List<UserType>
         {
             new()
             {
                 Name = "Admin",
-                Id = adminRoleId,
+                Id = Guid.NewGuid(),
                 NormalizedName = "ADMIN",
                 ConcurrencyStamp = "ADMIN"
             },
@@ -45,5 +44,6 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Models.User, UserTy
     public DbSet<Domain.Models.Product> Items { get; set; }
     public DbSet<Domain.Models.ProductType> ProductTypes { get; set; }
     public DbSet<Domain.Models.Order> Orders { get; set; }
+    public DbSet<BasketItem> BasketItems { get; set; }
     public DbSet<Domain.Models.Basket> Baskets { get; set; }
 }

@@ -1,0 +1,40 @@
+﻿@model EShop.Presentation.Models.Basket.BasketViewModel
+@{
+    ViewBag.Title = "My Basket";
+    Layout = "_Layout";
+}
+
+<h1>My Basket</h1>
+
+@if (Model.Items.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Product.Description</td>
+                    <td>@item.Product.Price</td>
+                    <td>@item.Quantity</td>
+                    <td>@(item.Product.Price * item.Quantity)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>Total Price: @Model.TotalPrice</div>
+
+    <a class="btn btn-primary">Proceed to Checkout</a>
+}
+else
+{
+    <p>Your basket is empty.</p>
+}

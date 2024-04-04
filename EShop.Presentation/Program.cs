@@ -4,8 +4,6 @@ using EShop.Infrastructure;
 using EShop.Infrastructure.Database;
 using EShop.Presentation.Extensions;
 using Serilog;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +41,6 @@ app.MapControllerRoute(
 app.MapRazorPages();
 app.UseStaticFiles();
 
+app.UseSerilogRequestLogging();
 await app.SeedDb();
 app.Run();
-
-

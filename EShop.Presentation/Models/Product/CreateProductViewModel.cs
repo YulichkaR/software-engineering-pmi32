@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using EShop.Domain.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace EShop.Presentation.Models;
+namespace EShop.Presentation.Models.Product;
 
-public class CreateProductViewModel
+public record CreateProductViewModel
 {
     [Range(0, double.MaxValue)]
     public decimal Price { get; set; }

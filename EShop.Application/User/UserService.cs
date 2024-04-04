@@ -45,6 +45,31 @@ public class UserService : IUserService
         return result;
     }
 
+    public async Task UpdateUser(UserUpdateDto userDto)
+    {
+        var user = await _userManager.FindByIdAsync(userDto.Id.ToString());
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        if (!string.IsNullOrEmpty(userDto.Email))
+        {
+            await _userManager.SetEmailAsync(user, userDto.Email);
+            await _userManager.SetUserNameAsync(user, userDto.Email);
+        }
+
+        if (!string.IsNullOrEmpty(userDto.Password))
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, userDto.Password);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Failed to change password. " + String.Join('\n',result.Errors.Select(e => e.Description)));
+            }
+        }
+    }
+
     public async Task DeleteUser(Guid id)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());

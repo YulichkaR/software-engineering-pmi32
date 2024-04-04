@@ -14,13 +14,13 @@ public class ProductTypeService : IProductTypeService
     }
     public async Task<List<Domain.Models.ProductType>> GetProductTypes()
     {
-        return await _productTypeRepository.GetAll();
+        return await _productTypeRepository.GetAllAsync();
     }
 
     public async Task<Domain.Models.ProductType> CreateProductType(CreateProductTypeDto productType)
     {
         var newProductType = _mapper.Map<Domain.Models.ProductType>(productType);
-        return await _productTypeRepository.Create(newProductType);
+        return await _productTypeRepository.CreateAsync(newProductType);
     }
 
     public async Task Delete(Guid id)
@@ -29,6 +29,6 @@ public class ProductTypeService : IProductTypeService
         {
             throw new Exception("Product type not found");
         }
-        await _productTypeRepository.Delete(id);
+        await _productTypeRepository.DeleteAsync(id);
     }
 }

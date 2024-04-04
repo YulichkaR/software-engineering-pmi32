@@ -10,5 +10,5 @@ public class Basket : IBaseEntity<Guid>
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 
-    [JsonIgnore] public ICollection<Product> Items { get; set; } = [];
+    [JsonIgnore] public ICollection<BasketItem> Items { get; set; } = [];
 }

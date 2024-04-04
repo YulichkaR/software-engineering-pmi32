@@ -1,6 +1,6 @@
 ﻿using EShop.Domain.Enums;
 
-namespace EShop.Presentation.Models;
+namespace EShop.Presentation.Models.Order;
 
 public class OrderListViewModel
 {

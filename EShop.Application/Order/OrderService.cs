@@ -23,7 +23,7 @@ public class OrderService : IOrderService
 
     public async Task<List<GetAllOrdersDto>> GetAllOrdersAsync()
     {
-        var orders = await _repository.GetAllBySpecification(new GetAllOrdersSpecification());
+        var orders = await _repository.GetAllBySpecificationAsync(new GetAllOrdersSpecification());
 
         var getAllOrdersDto = orders.ConvertAll(o => new GetAllOrdersDto
         {
@@ -32,7 +32,7 @@ public class OrderService : IOrderService
             Id = o.Id,
             Status = o.Status,
             TotalItemCount = o.Basket.Items.Sum(i => i.Quantity),
-            TotalPrice = o.Basket.Items.Sum(i => i.Price * i.Quantity)
+            TotalPrice = o.Basket.TotalPrice
         });
         
         return getAllOrdersDto;
@@ -40,7 +40,7 @@ public class OrderService : IOrderService
 
     public async Task<List<GetAllOrdersDto>> GetOrdersByUserIdAsync(Guid userId)
     {
-        var orders = await _repository.GetAllBySpecification(new GetUserOrdersSpecification(userId));
+        var orders = await _repository.GetAllBySpecificationAsync(new GetUserOrdersSpecification(userId));
         var getAllOrdersDto = orders.ConvertAll(o => new GetAllOrdersDto
         {
             OrderTime = o.OrderTime,
@@ -48,7 +48,7 @@ public class OrderService : IOrderService
             Id = o.Id,
             Status = o.Status,
             TotalItemCount = o.Basket.Items.Sum(i => i.Quantity),
-            TotalPrice = o.Basket.Items.Sum(i => i.Price * i.Quantity)
+            TotalPrice = o.Basket.TotalPrice
         });
         return getAllOrdersDto;
     }
@@ -57,7 +57,7 @@ public class OrderService : IOrderService
     {
         await ThrowIfIncorrectParameters(createOrderDto.UserId, createOrderDto.BasketId);
         var order = _mapper.Map<Domain.Models.Order>(createOrderDto);
-        await _repository.Create(order);
+        await _repository.CreateAsync(order);
     }
 
     private async Task ThrowIfIncorrectParameters(Guid userId, Guid basketId)
@@ -81,6 +81,6 @@ public class OrderService : IOrderService
             throw new Exception("Order not found");
         }
         
-        await _repository.Delete(orderId);
+        await _repository.DeleteAsync(orderId);
     }
 }
