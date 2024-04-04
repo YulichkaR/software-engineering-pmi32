@@ -24,7 +24,7 @@ public class ProductTypeTests
             new() { Id = Guid.NewGuid(), Name = "ProductType1" },
             new() { Id = Guid.NewGuid(), Name = "ProductType2" }
         };
-        _productTypeRepository.GetAll().Returns(Task.FromResult(productTypes));
+        _productTypeRepository.GetAllAsync().Returns(Task.FromResult(productTypes));
         
         // Act
         List<Domain.Models.ProductType> result = await _productTypeServices.GetProductTypes();
@@ -41,7 +41,7 @@ public class ProductTypeTests
         var productTypeDto = new CreateProductTypeDto ("ProductType1");
         var productType = new Domain.Models.ProductType { Id = Guid.NewGuid(), Name = productTypeDto.Name };
         _mapper.Map<Domain.Models.ProductType>(productTypeDto).Returns(productType);
-        _productTypeRepository.Create(productType).Returns(Task.FromResult(productType));
+        _productTypeRepository.CreateAsync(productType).Returns(Task.FromResult(productType));
         
         // Act
         var result = await _productTypeServices.CreateProductType(productTypeDto);
@@ -76,6 +76,6 @@ public class ProductTypeTests
         await _productTypeServices.Delete(id);
         
         // Assert
-        await _productTypeRepository.Received(1).Delete(id);
+        await _productTypeRepository.Received(1).DeleteAsync(id);
     }
 }

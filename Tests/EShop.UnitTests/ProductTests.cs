@@ -29,7 +29,7 @@ public class ProductTests
         };
         int page = 1;
         int pageSize = 10;
-        _productRepository.GetAllBySpecification(Arg.Any<GetPagedProductsSpecification>()).Returns(Task.FromResult(products));
+        _productRepository.GetAllBySpecificationAsync(Arg.Any<GetPagedProductsSpecification>()).Returns(Task.FromResult(products));
         
         // Act
         List<Domain.Models.Product> result = await _productServices.GetProducts(page, pageSize);
@@ -55,7 +55,7 @@ public class ProductTests
         };
         var product = new Domain.Models.Product { Id = Guid.NewGuid(), Description = productDto.Description };
         _mapper.Map<Domain.Models.Product>(productDto).Returns(product);
-        _productRepository.Create(product).Returns(Task.FromResult(product));
+        _productRepository.CreateAsync(product).Returns(Task.FromResult(product));
         
         // Act
         var result = await _productServices.CreateProduct(productDto);
@@ -79,9 +79,9 @@ public class ProductTests
             Quantity = 10
         };
         var product = new Domain.Models.Product { Id = id, Description = productDto.Description };
-        _productRepository.GetById(id)!.Returns(Task.FromResult(product));
+        _productRepository.GetByIdAsync(id)!.Returns(Task.FromResult(product));
         _mapper.Map(productDto, product).Returns(product);
-        _productRepository.Update(product).Returns(Task.FromResult(product));
+        _productRepository.UpdateAsync(product).Returns(Task.FromResult(product));
         
         // Act
         var result = await _productServices.UpdateProduct(id, productDto);
@@ -104,7 +104,7 @@ public class ProductTests
             ProductTypeId = Guid.NewGuid(),
             Quantity = 10
         };
-        _productRepository.GetById(Arg.Any<Guid>())!.Returns(Task.FromResult((Domain.Models.Product)null!));
+        _productRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult((Domain.Models.Product)null!));
         
         // Act
         Func<Task> act = async () => await _productServices.UpdateProduct(id, productDto);
@@ -132,7 +132,7 @@ public class ProductTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        _productRepository.GetById(Arg.Any<Guid>())!.Returns(Task.FromResult( new Domain.Models.Product { Id = id, Description = "Product1" }));
+        _productRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult( new Domain.Models.Product { Id = id, Description = "Product1" }));
         
         // Act
         Func<Task> act = async () => await _productServices.DeleteProduct(id);
@@ -148,7 +148,7 @@ public class ProductTests
         var id = Guid.NewGuid();
         var product = new Domain.Models.Product { Id = id, Description = "Product1", ProductTypeId = Guid.NewGuid(), Baskets = []};
         var resultProduct = new GetProductDto { Id = id, Description = "Product1" };
-        _productRepository.GetBySpecification(Arg.Any<GetProductDetailsSpecification>())!.Returns(Task.FromResult(product));
+        _productRepository.GetBySpecificationAsync(Arg.Any<GetProductDetailsSpecification>())!.Returns(Task.FromResult(product));
         _mapper.Map<GetProductDto>(product).Returns(resultProduct);
         // Act
         var result = await _productServices.GetProductById(id);
@@ -163,7 +163,7 @@ public class ProductTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        _productRepository.GetById(Arg.Any<Guid>())!.Returns(Task.FromResult((Domain.Models.Product)null!));
+        _productRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult((Domain.Models.Product)null!));
         
         // Act
         Func<Task> act = async () => await _productServices.GetProductById(id);
