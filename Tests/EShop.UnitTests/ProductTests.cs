@@ -132,7 +132,7 @@ public class ProductTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        _productRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult( new Domain.Models.Product { Id = id, Description = "Product1" }));
+        _productRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult( new Domain.Models.Product { Id = id, Description = "Product1", Img = "test"}));
         
         // Act
         Func<Task> act = async () => await _productServices.DeleteProduct(id);

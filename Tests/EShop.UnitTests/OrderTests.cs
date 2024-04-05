@@ -25,90 +25,82 @@ public class OrderTests
         _orderServices = new OrderService(_orderRepository, _userManager, _basketRepository, _mapper);
     }
     
-    // [Fact]
-    // public async Task GetOrders_ShouldReturnListOfOrders()
-    // {
-    //     // Arrange
-    //     var basketId = Guid.NewGuid();
-    //     List<Order> orders =
-    //     [
-    //         new()
-    //         {
-    //             Id = Guid.NewGuid(), 
-    //             OrderTime = DateTimeOffset.Now,
-    //             Address = "Address",
-    //             UserId = Guid.NewGuid(),
-    //             User = new User
-    //             {
-    //                 Id = Guid.NewGuid(),
-    //                 UserName = "Name",
-    //                 Email = "Email",
-    //                 PasswordHash = "Password",
-    //             },
-    //             Status = Status.Confirmed,
-    //             BasketId = basketId,
-    //             Basket = new Basket
-    //             {
-    //                 Id = basketId,
-    //                 Items = new List<Product>
-    //                 {
-    //                     new() { Price = 10, Quantity = 2 },
-    //                     new() { Price = 20, Quantity = 3 }
-    //                 }
-    //             }
-    //         },
-    //     ];
-    //     var ordersDto = orders.ConvertAll(o => new GetAllOrdersDto
-    //     {
-    //         OrderTime = o.OrderTime,
-    //         Address = o.Address,
-    //         Id = o.Id,
-    //         Status = o.Status,
-    //         TotalItemCount = o.Basket.Items.Sum(i => i.Quantity),
-    //         TotalPrice = o.Basket.Items.Sum(i => i.Price * i.Quantity)
-    //     });
-    //     _orderRepository.GetAllBySpecificationAsync(Arg.Any<GetAllOrdersSpecification>()).Returns(Task.FromResult(orders));
-    //     
-    //     // Act
-    //     List<GetAllOrdersDto> result = await _orderServices.GetAllOrdersAsync();
-    //     
-    //     // Assert
-    //     result.Should().NotBeNull();
-    //     result.Should().BeEquivalentTo(ordersDto);
-    // }
+    [Fact]
+    public async Task GetOrders_ShouldReturnListOfOrders()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        List<Order> orders =
+        [
+            new()
+            {
+                Id = Guid.NewGuid(), 
+                OrderTime = DateTimeOffset.Now,
+                Address = "Address",
+                UserId = Guid.NewGuid(),
+                User = new User
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Name",
+                    Email = "Email",
+                    PasswordHash = "Password",
+                },
+                Status = Status.Confirmed,
+                BasketId = basketId,
+                Basket = new Basket
+                {
+                    Id = basketId,
+                    Items = []
+                }
+            },
+        ];
+        var ordersDto = orders.ConvertAll(o => new GetAllOrdersDto
+        {
+            OrderTime = o.OrderTime,
+            Address = o.Address,
+            Id = o.Id,
+            Status = o.Status,
+            TotalItemCount = o.Basket.Items.Sum(i => i.Quantity),
+            TotalPrice = o.Basket.TotalPrice
+        });
+        _orderRepository.GetAllBySpecificationAsync(Arg.Any<GetAllOrdersSpecification>()).Returns(Task.FromResult(orders));
+        
+        // Act
+        List<GetAllOrdersDto> result = await _orderServices.GetAllOrdersAsync();
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(ordersDto);
+    }
     
-    // [Fact]
-    // public async Task GetOrdersByUserId_ShouldReturnListOfOrders()
-    // {
-    //     // Arrange
-    //     var userId = Guid.NewGuid();
-    //     var basketId = Guid.NewGuid();
-    //     List<Order> orders =
-    //     [
-    //         new()
-    //         {
-    //             Id = Guid.NewGuid(),
-    //             BasketId = basketId, 
-    //             OrderTime = DateTimeOffset.Now, Basket = new Basket
-    //             {
-    //                 Id = basketId,
-    //                 Items = new List<Product>
-    //                 {
-    //                     new() { Price = 10, Quantity = 2 },
-    //                     new() { Price = 20, Quantity = 3 }
-    //                 }
-    //             }
-    //         },
-    //     ];
-    //     _orderRepository.GetAllBySpecificationAsync(Arg.Any<GetUserOrdersSpecification>()).Returns(Task.FromResult(orders));
-    //     
-    //     // Act
-    //     List<GetAllOrdersDto> result = await _orderServices.GetOrdersByUserIdAsync(userId);
-    //     
-    //     // Assert
-    //     result.Should().NotBeNull();
-    //     result.Should().HaveCount(orders.Count);
-    // }
+    [Fact]
+    public async Task GetOrdersByUserId_ShouldReturnListOfOrders()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var basketId = Guid.NewGuid();
+        List<Order> orders =
+        [
+            new()
+            {
+                Id = Guid.NewGuid(),
+                BasketId = basketId, 
+                OrderTime = DateTimeOffset.Now, Basket = new Basket
+                {
+                    Id = basketId,
+                    Items = []
+                }
+            },
+        ];
+        _orderRepository.GetAllBySpecificationAsync(Arg.Any<GetUserOrdersSpecification>()).Returns(Task.FromResult(orders));
+        
+        // Act
+        List<GetAllOrdersDto> result = await _orderServices.GetOrdersByUserIdAsync(userId);
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(orders.Count);
+    }
     
     
     [Fact]
