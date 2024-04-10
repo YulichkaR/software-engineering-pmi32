@@ -56,20 +56,76 @@ public class BasketService : IBasketService
         return basket;
     }
 
-    public Task<Domain.Models.Basket> SetQuantities(Guid basketId, Dictionary<string, int> quantities)
+    public async Task<Domain.Models.Basket> SetQuantities(Guid basketId, Guid itemId, int quantity)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task DeleteBasketAsync(Guid basketId)
-    {
-        var isExists = await _repository.AnyAsync(basketId);
-        if (!isExists)
+        var basket = await _repository.GetBySpecificationAsync(new GetBasketByIdSpecification(basketId));
+        if (basket == null)
         {
             throw new Exception("Basket not found");
         }
         
-        await _repository.DeleteAsync(basketId);
+        var item = basket.Items.FirstOrDefault(i => i.Id == itemId);
+        if (item == null)
+        {
+            throw new Exception("Item not found");
+        }
+        
+        item.Quantity = quantity;
+        basket.TotalPrice = basket.Items.Sum(i => i.Quantity * i.Product.Price);
+        
+        await _repository.UpdateAsync(basket);
+        return basket;
+    }
+
+    public async Task<Domain.Models.Basket> RemoveItemFromBasket(Guid basketId, Guid itemId)
+    {
+        var basket = await _repository.GetBySpecificationAsync(new GetBasketByIdSpecification(basketId));
+        if (basket == null)
+        {
+            throw new Exception("Basket not found");
+        }
+        
+        var item = basket.Items.FirstOrDefault(i => i.Id == itemId);
+        if (item == null)
+        {
+            throw new Exception("Item not found");
+        }
+        
+        basket.Items.Remove(item);
+        basket.TotalPrice = basket.Items.Sum(i => i.Quantity * i.Product.Price);
+        await _repository.UpdateAsync(basket);
+        return basket;
+    }
+
+    public async Task ClearBasketAsync(Guid basketId)
+    {
+        var basket = await _repository.GetBySpecificationAsync(new GetBasketByIdSpecification(basketId));
+        if (basket is null)
+        {
+            throw new Exception("Basket not found");
+        }
+        
+        basket.Items.Clear();
+        basket.TotalPrice = 0;
+        
+        await _repository.UpdateAsync(basket);
+    }
+
+    public async Task ProceedBasket(Guid basketId)
+    {
+        var basket = await _repository.GetBySpecificationAsync(new GetBasketByIdSpecification(basketId));
+        if (basket is null)
+        {
+            throw new Exception("Basket not found");
+        }
+
+        if (basket.Items.Count == 0)
+        {
+            throw new Exception("Nothing to proceed");
+        }
+        
+        basket.IsProceed = true;
+        await _repository.UpdateAsync(basket);
     }
     
     private async Task<Domain.Models.Basket> GetOrCreateBasket(Guid userId)

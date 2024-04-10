@@ -1,4 +1,5 @@
-﻿@model List<EShop.Presentation.Models.Order.OrderListViewModel>
+﻿@using EShop.Domain.Enums
+@model List<EShop.Presentation.Models.Order.OrderListViewModel>
 
 @{
     ViewBag.Title = "title";
@@ -24,6 +25,7 @@ else
                     <th>Total Price</th>
                     <th>Total Items Count</th>
                     <th>Order Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,6 +38,21 @@ else
                         <td>$@order.TotalPrice</td>
                         <td>@order.TotalItemsCount</td>
                         <td>@order.OrderStatus</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Order Actions">
+                                @if (order.OrderStatus != Status.Confirmed)
+                                {
+                                    <form method="post" asp-action="Confirm">
+                                        <input type="hidden" name="orderId" value="@order.Id" />
+                                        <button type="submit" class="btn btn-success">Confirm</button>
+                                    </form>
+                                }
+                                <form method="post" asp-action="Cancel">
+                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                    <button type="submit" class="btn btn-danger">Cancel</button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EShop.Application.Basket;
 using EShop.Application.User;
+using EShop.Domain.Enums;
 using EShop.Domain.Specification;
 using Microsoft.AspNetCore.Identity;
 
@@ -57,7 +58,20 @@ public class OrderService : IOrderService
     {
         await ThrowIfIncorrectParameters(createOrderDto.UserId, createOrderDto.BasketId);
         var order = _mapper.Map<Domain.Models.Order>(createOrderDto);
+        order.OrderTime = DateTimeOffset.UtcNow;
+        order.Status = Status.NotConfirmed;
         await _repository.CreateAsync(order);
+    }
+    
+    public async Task ChangeOrderStatus(Guid orderId, Status status)
+    {
+        var order = await _repository.GetByIdAsync(orderId);
+        if (order is null)
+        {
+            throw new Exception("Order not found");
+        }
+        order.Status = status;
+        await _repository.UpdateAsync(order);
     }
 
     private async Task ThrowIfIncorrectParameters(Guid userId, Guid basketId)

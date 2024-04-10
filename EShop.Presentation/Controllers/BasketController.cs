@@ -29,7 +29,6 @@ public class BasketController : Controller
         };
         return View(basketViewModel);
     }
-
     [HttpPost]
     public async Task<IActionResult> AddItem(Guid productId, decimal price, int quantity)
     {
@@ -38,6 +37,25 @@ public class BasketController : Controller
             return RedirectToAction("Login", "Auth");
         }
         await _basketService.AddItemToBasket(new Guid(userId), productId, price, quantity);
+        return RedirectToAction("Index");
+    }
+    [HttpPost]
+    public async Task<IActionResult> UpdateQuantity(Guid basketId, Guid basketItemId, int quantity)
+    {
+        await _basketService.SetQuantities(basketId, basketItemId, quantity);
+        return RedirectToAction("Index");
+    }
+    [HttpPost]
+    public async Task<IActionResult> RemoveItem(Guid basketId, Guid itemId)
+    {
+        await _basketService.RemoveItemFromBasket(basketId, itemId);
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ClearBasket(Guid basketId)
+    {
+        await _basketService.ClearBasketAsync(basketId);
         return RedirectToAction("Index");
     }
 }

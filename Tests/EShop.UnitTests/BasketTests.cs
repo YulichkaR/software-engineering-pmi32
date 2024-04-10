@@ -128,7 +128,7 @@ public class BasketTests
         _basketRepository.AnyAsync(basketId).Returns(Task.FromResult(true));
         
         // Act
-        Func<Task> act = async () => await _basketServices.DeleteBasketAsync(basketId);
+        Func<Task> act = async () => await _basketServices.ClearBasketAsync(basketId);
         
         // Assert
         await act.Should().NotThrowAsync<Exception>();
@@ -142,7 +142,7 @@ public class BasketTests
         _basketRepository.AnyAsync(basketId).Returns(Task.FromResult(false));
         
         // Act
-        Func<Task> act = async () => await _basketServices.DeleteBasketAsync(basketId);
+        Func<Task> act = async () => await _basketServices.ClearBasketAsync(basketId);
         
         // Assert
         await act.Should().ThrowAsync<Exception>().WithMessage("Basket not found");

@@ -13,9 +13,8 @@ public class GetBasketByUserSpecification : Specification<Basket>
     public GetBasketByUserSpecification(Specification<Basket> specification) : base(specification)
     {
     }
-    public GetBasketByUserSpecification(Guid userId) : base(b => b.UserId == userId)
+    public GetBasketByUserSpecification(Guid userId) : base(b => b.UserId == userId && !b.IsProceed)
     {
         AddInclude($"{nameof(Basket.Items)}.{nameof(BasketItem.Product)}" );
-        
     }
 }
