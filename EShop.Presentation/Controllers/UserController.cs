@@ -1,11 +1,8 @@
 ﻿using EShop.Application.User;
-using EShop.Domain.Models;
-using EShop.Presentation.Models;
-using EShop.Presentation.Models.User;
+using EShop.Domain.Models;using EShop.Presentation.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Presentation.Controllers;
 
@@ -30,7 +27,8 @@ public class UserController : Controller
             Id = u.Id,
             UserName = u.UserName,
             Email = u.Email,
-            UserType = u.UserType
+            UserType = u.UserType,
+            IsConfirmed = u.IsConfirmed
         });
         return View(usersVm);
     }
@@ -72,6 +70,12 @@ public class UserController : Controller
     public async Task<IActionResult> Delete(Guid id)
     {
         await _userService.DeleteUser(id);
+        return RedirectToAction("Index");
+    }
+
+    public async Task<IActionResult> ConfirmUser(Guid id)
+    {
+        await _userService.ConfirmUserAsync(id);
         return RedirectToAction("Index");
     }
 }

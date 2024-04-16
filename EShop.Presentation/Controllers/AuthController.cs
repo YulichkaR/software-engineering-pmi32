@@ -1,8 +1,11 @@
-﻿using EShop.Domain.Models;
+﻿using System.Text;
+using System.Text.Encodings.Web;
+using EShop.Domain.Models;
 using EShop.Presentation.Models;
 using EShop.Presentation.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using ILogger = Serilog.ILogger;
 
 namespace EShop.Presentation.Controllers;
@@ -91,5 +94,36 @@ public class AuthController : Controller
         await _signInManager.SignOutAsync();
         _logger.Information("User logged out.");
         return RedirectToAction("Index", "Product");
+    }
+
+    public IActionResult ForgotPassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View();
+        }
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user is null)
+        {
+            ModelState.AddModelError(string.Empty, "User with email not found.");
+            return View();
+        }
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Login");
+        }
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+        return View();
     }
 }

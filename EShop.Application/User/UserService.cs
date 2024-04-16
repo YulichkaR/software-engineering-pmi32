@@ -40,7 +40,8 @@ public class UserService : IUserService
             Id = u.Id,
             UserName = u.UserName ?? throw new InvalidOperationException(),
             Email = u.Email ?? throw new InvalidOperationException(),
-            UserType = userRolesDictionary[u.Id]
+            UserType = userRolesDictionary[u.Id],
+            IsConfirmed = u.EmailConfirmed
         });
         return result;
     }
@@ -67,6 +68,21 @@ public class UserService : IUserService
             {
                 throw new Exception("Failed to change password. " + String.Join('\n',result.Errors.Select(e => e.Description)));
             }
+        }
+    }
+
+    public async Task ConfirmUserAsync(Guid id)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user is null)
+        {
+            throw new Exception("User not found");
+        }
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var result = await _userManager.ConfirmEmailAsync(user, token) ;
+        if (!result.Succeeded)
+        {
+            throw new Exception("Failed to confirm user");
         }
     }
 
