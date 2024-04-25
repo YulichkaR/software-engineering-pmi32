@@ -25,18 +25,18 @@ public class BaseRepository<TKey, TEntity, TContext> :
 
     public Task<List<TEntity>> GetAllBySpecificationAsync(Specification<TEntity> spec)
     {
-        return ApplySpecification(spec).ToListAsync();
+        return ApplySpecification(spec).AsNoTracking().ToListAsync();
     }
 
     public Task<TEntity?> GetBySpecificationAsync(Specification<TEntity> spec)
     {
-        return ApplySpecification(spec).FirstOrDefaultAsync();
+        return ApplySpecification(spec).AsNoTracking().FirstOrDefaultAsync();
     }
 
 
     public Task<List<TEntity>> GetAllAsync()
     {
-        return _dbContext.Set<TEntity>().ToListAsync();
+        return _dbContext.Set<TEntity>().AsNoTracking().ToListAsync();
     }
 
     public async Task<TEntity> CreateAsync(TEntity entity)

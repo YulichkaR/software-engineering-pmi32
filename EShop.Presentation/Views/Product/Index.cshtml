@@ -30,6 +30,7 @@ else
                     <div class="card-body">
                         <h5 class="card-title">@product.Description</h5>
                         <p class="card-text">Price: @product.Price</p>
+                        <p class="card-text">Likes count: @product.LikeCount</p>
                         <p class="card-text">Quantity: @product.Quantity</p>
                         <p class="card-text">Product Type: @product.Type.Name</p>
                         <a href="@Url.Action("GetProduct", "Product", new { id = product.Id })" class="btn btn-primary">View Details</a>

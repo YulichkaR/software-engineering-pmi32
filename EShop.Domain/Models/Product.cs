@@ -15,4 +15,6 @@ public class Product : IBaseEntity<Guid>
     public ProductType Type { get; set; } = null!;
     [JsonIgnore]
     public ICollection<BasketItem> Baskets { get; set; } = [];
+    [JsonIgnore]
+    public ICollection<ProductLike> Likes { get; set; } = [];
 }

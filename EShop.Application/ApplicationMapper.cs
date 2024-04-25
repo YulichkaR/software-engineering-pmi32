@@ -22,5 +22,13 @@ public class ApplicationMapper : Profile
             .ReverseMap();
         CreateMap<Domain.Models.Product, GetProductDto>()
             .ReverseMap();
+        CreateMap<GetOrderDto, Domain.Models.Order>()
+            .ReverseMap();
+        CreateMap<Domain.Models.Product, GetProductDto>()
+            .AfterMap((product, dto) =>
+            {
+                dto.LikeCount = product.Likes.Count;
+            })
+            .ReverseMap();
     }
 }

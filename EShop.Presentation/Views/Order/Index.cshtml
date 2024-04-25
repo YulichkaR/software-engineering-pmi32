@@ -52,6 +52,7 @@ else
                                     <button type="submit" class="btn btn-danger">Cancel</button>
                                 </form>
                             </div>
+                            <a href="@Url.Action("ChangeAddress", "Order", new { orderId = order.Id })" class="btn btn-primary">Change Address</a>
                         </td>
                     </tr>
                 }

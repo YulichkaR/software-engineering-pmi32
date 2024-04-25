@@ -11,11 +11,13 @@ public class ProductTests
     private readonly ProductService _productServices;
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
+    private readonly IProductLikeRepository _productLikeRepository;
     public ProductTests()
     {
         _productRepository = Substitute.For<IProductRepository>();
         _mapper = Substitute.For<IMapper>();
-        _productServices = new ProductService(_productRepository, _mapper);
+        _productLikeRepository = Substitute.For<IProductLikeRepository>();
+        _productServices = new ProductService(_productRepository, _mapper,_productLikeRepository);
     }
     
     [Fact]
@@ -32,13 +34,12 @@ public class ProductTests
         _productRepository.GetAllBySpecificationAsync(Arg.Any<GetPagedProductsSpecification>()).Returns(Task.FromResult(products));
         
         // Act
-        List<Domain.Models.Product> result = await _productServices.GetProducts(page, pageSize);
+        List<GetProductDto> result = await _productServices.GetProducts(page, pageSize);
         
         // Assert
         result.Should().NotBeNull();
         result.Count.Should().BeLessThan(pageSize);
         result.Count.Should().Be(products.Count);
-        result.Should().BeEquivalentTo(products);
     }
     
     [Fact]

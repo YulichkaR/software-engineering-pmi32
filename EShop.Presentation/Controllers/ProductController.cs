@@ -1,4 +1,5 @@
-﻿using EShop.Application.Product;
+﻿using System.Security.Claims;
+using EShop.Application.Product;
 using EShop.Application.ProductType;
 using EShop.Presentation.Models;
 using EShop.Presentation.Models.Product;
@@ -36,6 +37,7 @@ public class ProductController : Controller
     public async Task<IActionResult> GetProduct(Guid id)
     {
         var product = await _productService.GetProductById(id);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var productVm = new ProductViewModel
         {
             Id = product.Id,
@@ -43,7 +45,9 @@ public class ProductController : Controller
             Quantity = product.Quantity,
             Description = product.Description,
             Img = product.Img,
-            ProductType = product.Type.Name
+            ProductType = product.Type.Name,
+            LikeCount = product.LikeCount,
+            IsLikedByCurrentUser = product.Likes.Any(pl => pl.UserId == new Guid(userId))
         };
         return View(productVm);
     }
@@ -135,5 +139,32 @@ public class ProductController : Controller
     {
         await _productService.DeleteProduct(id);
         return RedirectToAction("Index");
+    }
+    
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> AddLike(Guid productId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+        await _productService.AddLikeToProduct(productId, new Guid(userId));
+        return RedirectToAction("GetProduct", new { id = productId });
+    }
+    
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Unlike(Guid productId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+        
+        await _productService.RemoveLikeFromProduct(productId, new Guid(userId));
+        return RedirectToAction("GetProduct", new { id = productId });
     }
 }

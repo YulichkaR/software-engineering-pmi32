@@ -10,6 +10,7 @@ public class GetPagedProductsSpecification : Specification<Product>
         AddOrderBy(p => p.Quantity);
         AddPagination(page, pageSize);
         AddInclude(p => p.Type);
+        AddInclude(p => p.Likes);
         IsSplitQuery = true;
     }
 }

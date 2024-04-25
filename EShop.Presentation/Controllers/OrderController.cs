@@ -88,4 +88,22 @@ public class OrderController : Controller
         await _orderService.ChangeOrderStatus(orderId, Status.Canceled);
         return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> ChangeAddress(Guid orderid)
+    {
+        var order = await _orderService.GetOrderByIdAsync(orderid);
+        var orderViewModel = new ChangeAddressViewModel
+        {
+            OrderId = order.Id,
+            Address = order.Address
+        };
+        return View(orderViewModel);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> ChangeAddress(ChangeAddressViewModel model)
+    {
+        await _orderService.ChangeAddress(model.OrderId, model.Address);
+        return RedirectToAction(nameof(Index));
+    }
 }

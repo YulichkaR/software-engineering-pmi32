@@ -3,6 +3,7 @@ using System;
 using EShop.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EShop.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240425104040_ProductLike")]
+    partial class ProductLike
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,9 +140,6 @@ namespace EShop.Infrastructure.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
                     b.HasKey("UserId", "ProductId");
 
                     b.HasIndex("ProductId");
@@ -164,17 +164,17 @@ namespace EShop.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("45fc4a83-b149-4db1-9706-fb3bcc9b9d2c"),
+                            Id = new Guid("1984cbd7-6543-48fd-88bb-a73b44aa00df"),
                             Name = "Electronics"
                         },
                         new
                         {
-                            Id = new Guid("1cc9e528-9349-40d2-b646-afa6c526622a"),
+                            Id = new Guid("84c3deaf-8cb5-4b55-8494-1fecac4f4c4a"),
                             Name = "Clothing"
                         },
                         new
                         {
-                            Id = new Guid("a6423dc8-4465-4afd-b00a-577ff7e6b816"),
+                            Id = new Guid("78d86a5a-b6ff-41b7-9459-231ac2381919"),
                             Name = "Books"
                         });
                 });
@@ -273,14 +273,14 @@ namespace EShop.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a5e08d81-94ac-46dc-b27a-5e48f495e62c"),
+                            Id = new Guid("ee4126fc-2cda-4454-aeac-c1f7bb68a230"),
                             ConcurrencyStamp = "ADMIN",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("3596a3f2-3e53-4857-a2d8-b39fa148c7d2"),
+                            Id = new Guid("8fe91815-3da3-4576-9c40-db4864bedcb6"),
                             ConcurrencyStamp = "USER",
                             Name = "User",
                             NormalizedName = "USER"

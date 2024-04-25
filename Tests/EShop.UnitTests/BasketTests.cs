@@ -1,4 +1,5 @@
-﻿using EShop.Application.Basket;
+﻿using System.Runtime.InteropServices.JavaScript;
+using EShop.Application.Basket;
 using EShop.Application.Product;
 using EShop.Domain.Models;
 using EShop.Domain.Specification;
@@ -125,7 +126,8 @@ public class BasketTests
     {
         // Arrange
         var basketId = Guid.NewGuid();
-        _basketRepository.AnyAsync(basketId).Returns(Task.FromResult(true));
+        var basket = new Basket { Id = basketId, Items = [], TotalPrice = 0};
+        _basketRepository.GetBySpecificationAsync(Arg.Any<GetBasketByIdSpecification>())!.Returns(Task.FromResult(basket));
         
         // Act
         Func<Task> act = async () => await _basketServices.ClearBasketAsync(basketId);

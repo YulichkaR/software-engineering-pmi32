@@ -54,6 +54,17 @@ public class OrderService : IOrderService
         return getAllOrdersDto;
     }
 
+    public async Task<GetOrderDto> GetOrderByIdAsync(Guid orderId)
+    {
+        var order = await _repository.GetByIdAsync(orderId);
+        if (order is null)
+        {
+            throw new Exception("Order not found");
+        }
+        
+        return _mapper.Map<GetOrderDto>(order);
+    }
+
     public async Task CreateOrderAsync(CreateOrderDto createOrderDto)
     {
         await ThrowIfIncorrectParameters(createOrderDto.UserId, createOrderDto.BasketId);
@@ -71,6 +82,17 @@ public class OrderService : IOrderService
             throw new Exception("Order not found");
         }
         order.Status = status;
+        await _repository.UpdateAsync(order);
+    }
+
+    public async Task ChangeAddress(Guid orderId, string address)
+    {
+        var order = await _repository.GetByIdAsync(orderId);
+        if (order is null)
+        {
+            throw new Exception("Order not found");
+        }
+        order.Address = address;
         await _repository.UpdateAsync(order);
     }
 

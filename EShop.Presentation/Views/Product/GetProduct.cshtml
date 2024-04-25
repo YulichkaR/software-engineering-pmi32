@@ -48,6 +48,7 @@
                 <p class="card-text">Price: $@Model.Price</p>
                 <p class="card-text">Quantity: @Model.Quantity</p>
                 <p class="card-text">Product Type: @Model.ProductType</p>
+                <p class="card-text">Likes count: @Model.LikeCount</p>
                 @if (SignInManager.IsSignedIn(User) && User.FindFirst(ClaimTypes.Role) != null && !User.FindFirst(ClaimTypes.Role)!.Value.Equals("Admin"))
                 {
                     <form method="post" action="@Url.Action("AddItem", "Basket")">
@@ -59,6 +60,13 @@
                         </div>
                         <button type="submit" class="btn btn-success">Add to Cart</button>
                     </form>
+                }
+                @if (!SignInManager.IsSignedIn(User) || (User.FindFirst(ClaimTypes.Role)?.Value != "Admin"))
+                {
+                <form method="post" action="@Url.Action(Model.IsLikedByCurrentUser ? "Unlike" : "AddLike", "Product")">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-primary">@(!Model.IsLikedByCurrentUser ? "Like" : "Unlike")</button>
+                </form>
                 }
             </div>
         </div>

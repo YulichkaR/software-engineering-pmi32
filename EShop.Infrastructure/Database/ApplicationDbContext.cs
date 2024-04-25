@@ -37,6 +37,8 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Models.User, UserTy
                 ConcurrencyStamp = "USER"
             }
         });
+        modelBuilder.Entity<ProductLike>()
+            .HasKey(like => new {like.UserId, like.ProductId});
         
         base.OnModelCreating(modelBuilder);
     }
@@ -46,4 +48,5 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Models.User, UserTy
     public DbSet<Domain.Models.Order> Orders { get; set; }
     public DbSet<BasketItem> BasketItems { get; set; }
     public DbSet<Domain.Models.Basket> Baskets { get; set; }
+    public DbSet<ProductLike> ProductLikes { get; set; }
 }
