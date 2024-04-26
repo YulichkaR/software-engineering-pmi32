@@ -150,5 +150,144 @@ public class BasketTests
         await act.Should().ThrowAsync<Exception>().WithMessage("Basket not found");
     }
     
+    [Fact]
+    public async Task ProceedBasket_ShouldProceedBasket()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        var basket = new Basket { Id = basketId, Items = new List<BasketItem> { new BasketItem { Product = new Product { Price = 100 }, Quantity = 2 } } };
+        _basketRepository.GetBySpecificationAsync(Arg.Any<GetBasketByIdSpecification>())!.Returns(Task.FromResult(basket));
+        _basketRepository.UpdateAsync(Arg.Any<Basket>())!.Returns(Task.FromResult(basket));
+        
+        // Act
+        Func<Task> act = async () =>  await _basketServices.ProceedBasket(basketId);
+        
+        // Assert
+        await act.Should().NotThrowAsync();
+    }
     
+    [Fact]
+    public async Task ProceedBasket_WhenBasketNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        _basketRepository.AnyAsync(basketId).Returns(Task.FromResult(false));
+        
+        // Act
+        Func<Task> act = async () => await _basketServices.ProceedBasket(basketId);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Basket not found");
+    }
+    
+    [Fact]
+    public async Task ProceedBasket_WhenBasketIsEmpty_ShouldThrowException()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        var basket = new Basket { Id = basketId, Items = new List<BasketItem>() };
+        _basketRepository.GetBySpecificationAsync(Arg.Any<GetBasketByIdSpecification>())!.Returns(Task.FromResult(basket));
+        
+        // Act
+        Func<Task> act = async () => await _basketServices.ProceedBasket(basketId);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Nothing to proceed");
+    }
+    
+    [Fact]
+    public async Task RemoveItemFromBasket_ShouldRemoveItem()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        var itemId = Guid.NewGuid();
+        var basket = new Basket { Id = basketId, Items = new List<BasketItem> { new BasketItem { Id = itemId } } };
+        _basketRepository.GetBySpecificationAsync(Arg.Any<GetBasketByIdSpecification>())!.Returns(Task.FromResult(basket));
+        
+        // Act
+        Func<Task> act = async () => await _basketServices.RemoveItemFromBasket(basketId, itemId);
+        
+        // Assert
+        await act.Should().NotThrowAsync();
+    }
+    
+    [Fact]
+    public async Task RemoveItemFromBasket_WhenBasketNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        var itemId = Guid.NewGuid();
+        _basketRepository.AnyAsync(basketId).Returns(Task.FromResult(false));
+        
+        // Act
+        Func<Task> act = async () => await _basketServices.RemoveItemFromBasket(basketId, itemId);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Basket not found");
+    }
+    
+    [Fact]
+    public async Task RemoveItemFromBasket_WhenItemNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        var itemId = Guid.NewGuid();
+        var basket = new Basket { Id = basketId, Items = new List<BasketItem>() };
+        _basketRepository.GetBySpecificationAsync(Arg.Any<GetBasketByIdSpecification>())!.Returns(Task.FromResult(basket));
+        
+        // Act
+        Func<Task> act = async () => await _basketServices.RemoveItemFromBasket(basketId, itemId);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Item not found");
+    }
+    
+    [Fact]
+    public async Task SetQuantities_ShouldSetQuantities()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        var itemId = Guid.NewGuid();
+        // var quantities = new Dictionary<Guid, int> { { Guid.NewGuid(), 2 } };
+        var product = new Product { Id = Guid.NewGuid(), Price = 100 };
+        var basket = new Basket { Id = basketId, Items = new List<BasketItem> { new BasketItem { Id = itemId, Quantity = 1, ProductId = product.Id, Product = product} } };
+        _basketRepository.GetBySpecificationAsync(Arg.Any<GetBasketByIdSpecification>())!.Returns(Task.FromResult(basket));
+        
+        // Act
+        var result =  await _basketServices.SetQuantities(basketId, itemId, 5);
+        // Assert
+        result.Should().NotBeNull();
+        result.Items.First().Quantity.Should().Be(5);
+    }
+    
+    [Fact]
+    public async Task SetQuantities_WhenBasketNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        var itemId = Guid.NewGuid();
+        _basketRepository.AnyAsync(basketId).Returns(Task.FromResult(false));
+        
+        // Act
+        Func<Task> act = async () => await _basketServices.SetQuantities(basketId, itemId, 5);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Basket not found");
+    }
+    
+    [Fact]
+    public async Task SetQuantities_WhenItemNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var basketId = Guid.NewGuid();
+        var itemId = Guid.NewGuid();
+        var basket = new Basket { Id = basketId, Items = new List<BasketItem>() };
+        _basketRepository.GetBySpecificationAsync(Arg.Any<GetBasketByIdSpecification>())!.Returns(Task.FromResult(basket));
+        
+        // Act
+        Func<Task> act = async () => await _basketServices.SetQuantities(basketId, itemId, 5);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Item not found");
+    }
 }

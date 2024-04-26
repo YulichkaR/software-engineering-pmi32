@@ -140,4 +140,64 @@ public class UserTests
         // Assert
         await act.Should().ThrowAsync<Exception>().WithMessage("User not found");
     }
+    
+    [Fact]
+    public async Task DeleteUser_ShouldThrowException_WhenFailedToDeleteUser()
+    {
+        // Arrange
+        var user = new User { Id = Guid.NewGuid(), UserName = "User1" };
+        _userManager.FindByIdAsync(Arg.Any<string>())!.Returns(Task.FromResult(user));
+        _userManager.DeleteAsync(user).Returns(Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "Error" })));
+        
+        // Act
+        Func<Task> act = async () => await _userServices.DeleteUser(user.Id);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Failed to delete user");
+    }
+    
+    [Fact]
+    public async Task ConfirmUserAsync_ShouldConfirmUser()
+    {
+        // Arrange
+        var user = new User { Id = Guid.NewGuid(), UserName = "User1" };
+        _userManager.FindByIdAsync(Arg.Any<string>())!.Returns(Task.FromResult(user));
+        _userManager.GenerateEmailConfirmationTokenAsync(user).Returns(Task.FromResult("token"));
+        _userManager.ConfirmEmailAsync(user, "token").Returns(Task.FromResult(IdentityResult.Success));
+        
+        // Act
+        await _userServices.ConfirmUserAsync(user.Id);
+        
+        // Assert
+        await _userManager.Received().ConfirmEmailAsync(user, "token");
+    }
+    
+    [Fact]
+    public async Task ConfirmUserAsync_ShouldThrowException_WhenUserNotFound()
+    {
+        // Arrange
+        _userManager.FindByIdAsync(Arg.Any<string>())!.Returns(Task.FromResult<User>(null));
+        
+        // Act
+        Func<Task> act = async () => await _userServices.ConfirmUserAsync(Guid.NewGuid());
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("User not found");
+    }
+    
+    [Fact]
+    public async Task ConfirmUserAsync_ShouldThrowException_WhenFailedToConfirmUser()
+    {
+        // Arrange
+        var user = new User { Id = Guid.NewGuid(), UserName = "User1" };
+        _userManager.FindByIdAsync(Arg.Any<string>())!.Returns(Task.FromResult(user));
+        _userManager.GenerateEmailConfirmationTokenAsync(user).Returns(Task.FromResult("token"));
+        _userManager.ConfirmEmailAsync(user, "token").Returns(Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "Error" })));
+        
+        // Act
+        Func<Task> act = async () => await _userServices.ConfirmUserAsync(user.Id);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Failed to confirm user");
+    }
 }

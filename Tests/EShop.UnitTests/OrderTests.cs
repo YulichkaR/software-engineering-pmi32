@@ -156,5 +156,94 @@ public class OrderTests
         await act.Should().NotThrowAsync<Exception>();
     }
     
+    [Fact]
+    public async Task ChangeOrderStatus_WhenOrderNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        _orderRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(Task.FromResult((Order)null));
+        
+        // Act
+        Func<Task> act = async () => await _orderServices.ChangeOrderStatus(id, Status.Confirmed);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Order not found");
+    }
+    
+    [Fact]
+    public async Task ChangeOrderStatus_WhenOrderExists_ShouldNotThrowException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var order = new Order { Id = id };
+        _orderRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult(order));
+        
+        // Act
+        Func<Task> act = async () => await _orderServices.ChangeOrderStatus(id, Status.Confirmed);
+        
+        // Assert
+        await act.Should().NotThrowAsync<Exception>();
+    }
+    
+    [Fact]
+    public async Task ChangeAddress_WhenOrderNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        _orderRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(Task.FromResult((Order)null));
+        
+        // Act
+        Func<Task> act = async () => await _orderServices.ChangeAddress(id, "Address");
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Order not found");
+    }
+    
+    [Fact]
+    public async Task ChangeAddress_WhenOrderExists_ShouldNotThrowException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var order = new Order { Id = id };
+        _orderRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult(order));
+        
+        // Act
+        Func<Task> act = async () => await _orderServices.ChangeAddress(id, "Address");
+        
+        // Assert
+        await act.Should().NotThrowAsync<Exception>();
+    }
+    
+    [Fact]
+    public async Task GetOrderByIdAsync_WhenOrderNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        _orderRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(Task.FromResult((Order)null));
+        
+        // Act
+        Func<Task> act = async () => await _orderServices.GetOrderByIdAsync(id);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Order not found");
+    }
+    
+    [Fact]
+    public async Task GetOrderByIdAsync_WhenOrderExists_ShouldNotThrowException()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var order = new Order { Id = id };
+        var orderDto = new GetOrderDto { Id = id };
+        _orderRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult(order));
+        _mapper.Map<GetOrderDto>(order).Returns(orderDto);
+        
+        // Act
+        var result = await _orderServices.GetOrderByIdAsync(id);
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(orderDto);
+    }
     
 }

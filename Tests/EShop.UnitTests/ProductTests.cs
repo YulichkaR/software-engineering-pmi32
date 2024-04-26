@@ -172,4 +172,80 @@ public class ProductTests
         // Assert
         await act.Should().ThrowAsync<Exception>().WithMessage("Product not found");
     }
+    
+    [Fact]
+    public async Task GetTotalProducts_ShouldReturnTotalProducts()
+    {
+        // Arrange
+        _productRepository.CountAsync().Returns(Task.FromResult(10));
+        
+        // Act
+        var result = await _productServices.GetTotalProducts();
+        
+        // Assert
+        result.Should().Be(10);
+    }
+    
+    [Fact]
+    public async Task LikeProduct_ShouldLikeProduct()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        var product = new Domain.Models.Product { Id = productId, Description = "Product1" };
+        _productRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult(product));
+        
+        // Act
+        await _productServices.AddLikeToProduct(productId, userId);
+        
+        // Assert
+        await _productLikeRepository.Received().CreateAsync(Arg.Any<Domain.Models.ProductLike>());
+    }
+    
+    [Fact]
+    public async Task LikeProduct_WhenProductNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        _productRepository.GetByIdAsync(Arg.Any<Guid>())!.Returns(Task.FromResult((Domain.Models.Product)null!));
+        
+        // Act
+        Func<Task> act = async () => await _productServices.AddLikeToProduct(productId, userId);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Product not found");
+    }
+    
+    [Fact]
+    public async Task UnlikeProduct_ShouldUnlikeProduct()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        var product = new Domain.Models.Product { Id = productId, Description = "Product1" };
+        var productLike = new Domain.Models.ProductLike { Id = Guid.NewGuid(), ProductId = productId, UserId = userId };
+        _productLikeRepository.GetBySpecificationAsync(Arg.Any<GetProductLikeSpecification>())!.Returns(Task.FromResult(productLike));
+        
+        // Act
+        await _productServices.RemoveLikeFromProduct(productId, userId);
+        
+        // Assert
+        await _productLikeRepository.Received().DeleteAsync(productLike.Id);
+    }
+    
+    [Fact]
+    public async Task UnlikeProduct_WhenLikeNotExists_ShouldThrowException()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+        _productLikeRepository.GetBySpecificationAsync(Arg.Any<GetProductLikeSpecification>())!.Returns(Task.FromResult((Domain.Models.ProductLike)null!));
+        
+        // Act
+        Func<Task> act = async () => await _productServices.RemoveLikeFromProduct(productId, userId);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Like not found");
+    }
 }
