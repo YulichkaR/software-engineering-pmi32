@@ -49,6 +49,7 @@ public class ProductService : IProductService
     public async Task<Domain.Models.Product> CreateProduct(CreateProductDto product)
     {
         var newProduct = _mapper.Map<Domain.Models.Product>(product);
+        //file upload
         await UploadImage(product, newProduct);
         
         return await _repository.CreateAsync(newProduct);

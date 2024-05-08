@@ -51,7 +51,6 @@ public class ProductController : Controller
         };
         return View(productVm);
     }
-    //Create
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create()
     {
@@ -86,7 +85,6 @@ public class ProductController : Controller
         await _productService.CreateProduct(productDto);
         return RedirectToAction("Index");
     }
-    //Update
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(Guid id)
     {
@@ -140,7 +138,6 @@ public class ProductController : Controller
         await _productService.DeleteProduct(id);
         return RedirectToAction("Index");
     }
-    
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> AddLike(Guid productId)
@@ -150,10 +147,11 @@ public class ProductController : Controller
         {
             return RedirectToAction("Login", "Auth");
         }
+        // Call a method in the ProductService to add the like
         await _productService.AddLikeToProduct(productId, new Guid(userId));
+        // Redirect back to the product details page
         return RedirectToAction("GetProduct", new { id = productId });
     }
-    
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> Unlike(Guid productId)
@@ -163,8 +161,8 @@ public class ProductController : Controller
         {
             return RedirectToAction("Login", "Auth");
         }
-        
         await _productService.RemoveLikeFromProduct(productId, new Guid(userId));
+
         return RedirectToAction("GetProduct", new { id = productId });
     }
 }

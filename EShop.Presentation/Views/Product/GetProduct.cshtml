@@ -20,9 +20,9 @@
     @if (SignInManager.IsSignedIn(User) && User.FindFirst(ClaimTypes.Role) != null && User.FindFirst(ClaimTypes.Role)!.Value.Equals("Admin"))
     {
         <div class="col text-end">
-            <a href="@Url.Action("Update", "Product", new { id = Model.Id })" class="btn btn-primary">Edit</a>
+            <a href="@Url.Action("Update", "Product", new { id = Model.Id })" class="btn btn-primary my-1">Edit</a>
             <form action="@Url.Action("Delete", "Product", new { id = Model.Id })" method="post" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-danger my-1">Delete</button>
             </form>
         </div>
     }
@@ -58,7 +58,7 @@
                             <label for="quantity">Quantity:</label>
                             <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" />
                         </div>
-                        <button type="submit" class="btn btn-success">Add to Cart</button>
+                        <button type="submit" class="btn btn-success my-1">Add to Cart</button>
                     </form>
                 }
                 @if (!SignInManager.IsSignedIn(User) || (User.FindFirst(ClaimTypes.Role)?.Value != "Admin"))

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using EShop.Application.Basket;
-using EShop.Application.User;
 using EShop.Domain.Enums;
 using EShop.Domain.Specification;
 using Microsoft.AspNetCore.Identity;

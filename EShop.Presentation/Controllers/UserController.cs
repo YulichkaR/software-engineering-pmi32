@@ -17,7 +17,6 @@ public class UserController : Controller
         _userService = userService;
         _userManager = userManager;
     }
-    // GET
     public async Task<IActionResult> Index()
     {
         var users = await _userService.GetAllUsersAsync();
@@ -32,7 +31,6 @@ public class UserController : Controller
         });
         return View(usersVm);
     }
-
     public async Task<IActionResult> Edit(Guid Id)
     {
         var user = await _userService.GetUserById(Id);

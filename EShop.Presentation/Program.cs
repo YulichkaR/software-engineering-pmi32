@@ -3,7 +3,11 @@ using EShop.Domain.Models;
 using EShop.Infrastructure;
 using EShop.Infrastructure.Database;
 using EShop.Presentation.Extensions;
+using EShop.Presentation.Services;
 using Serilog;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,7 @@ builder.Services.AddApplication();
 builder.Services.AddDefaultIdentity<User>()
     .AddRoles<UserType>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
 
 var app = builder.Build();
