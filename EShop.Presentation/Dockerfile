@@ -20,4 +20,10 @@ RUN dotnet publish "EShop.Presentation.csproj" -c $BUILD_CONFIGURATION -o /app/p
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Change ownership of wwwroot directory
+USER root
+RUN chown -R $APP_UID:$APP_UID /app/wwwroot
+
+USER $APP_UID
 ENTRYPOINT ["dotnet", "EShop.Presentation.dll"]

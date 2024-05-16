@@ -6,6 +6,17 @@
     Layout = "_Layout";
 }
 
+<style>
+    th {
+        white-space: nowrap;
+    }
+
+    @@media (max-width: 768px) {
+        .cn-button {
+            margin-top: 10px;
+        }
+    }
+</style>
 
 <h1 class="mb-4">Order List</h1>
 
@@ -40,19 +51,35 @@ else
                         <td>@order.OrderStatus</td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Order Actions">
+
                                 @if (order.OrderStatus != Status.Confirmed)
                                 {
-                                    <form method="post" asp-action="Confirm">
-                                        <input type="hidden" name="orderId" value="@order.Id" />
-                                        <button type="submit" class="btn btn-success m-1">Confirm</button>
-                                    </form>
+                                <div class="row">
+                                    <div class="col">
+                                        <form method="post" asp-action="Confirm">
+                                            <input type="hidden" name="orderId" value="@order.Id" />
+                                            <button type="submit" class="btn btn-success">Confirm</button>
+                                        </form>
+                                    </div>
+                                    <div class="col cn-button">
+                                        <form method="post" asp-action="Cancel">
+                                            <input type="hidden" name="orderId" value="@order.Id" />
+                                            <button type="submit" class="btn btn-danger">Cancel</button>
+                                        </form>
+                                    </div>
+                                </div>
                                 }
-                                <form method="post" asp-action="Cancel">
-                                    <input type="hidden" name="orderId" value="@order.Id" />
-                                    <button type="submit" class="btn btn-danger  m-1">Cancel</button>
-                                </form>
+                                else
+                                {
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a href="@Url.Action("ChangeAddress", "Order", new { orderId = order.Id })" class="btn btn-primary ">Change Address</a>
+                                    </div>
+                                </div>
+                                }
+
+
                             </div>
-                            <a href="@Url.Action("ChangeAddress", "Order", new { orderId = order.Id })" class="btn btn-primary  m-1">Change Address</a>
                         </td>
                     </tr>
                 }
@@ -60,4 +87,3 @@ else
         </table>
     </div>
 }
-

@@ -107,6 +107,27 @@ public class AuthController : Controller
     [HttpPost]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
     {
+        // if (!ModelState.IsValid)
+        // {
+        //     return View();
+        // }
+        // var user = await _userManager.FindByEmailAsync(model.Email);
+        // if (user is null)
+        // {
+        //     ModelState.AddModelError(string.Empty, "User with email not found.");
+        //     return View();
+        // }
+        // var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        // var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+        // if (result.Succeeded)
+        // {
+        //     return RedirectToAction("Login");
+        // }
+        // foreach (var error in result.Errors)
+        // {
+        //     ModelState.AddModelError(string.Empty, error.Description);
+        // }
+        // return View();
         if (ModelState.IsValid)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);

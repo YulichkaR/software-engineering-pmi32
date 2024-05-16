@@ -8,6 +8,17 @@
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
+
+<style>
+    .card {
+        max-width: 300px;
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>
 @if (SignInManager.IsSignedIn(User) && User.FindFirst(ClaimTypes.Role) != null && User.FindFirst(ClaimTypes.Role)!.Value.Equals("Admin"))
 {
     <div class="text-end">
@@ -26,7 +37,7 @@ else
         {
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="card h-100">
-                    <img src="~/images/products/@product.Img" class="card-img-top " alt="@product.Description">
+                    <img src="~/images/products/@product.Img" class="card-img-top" alt="@product.Description">
                     <div class="card-body">
                         <h5 class="card-title">@product.Description</h5>
                         <p class="card-text">Price: @product.Price</p>
