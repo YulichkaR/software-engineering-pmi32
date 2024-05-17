@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using EShop.Application.Basket;
 using EShop.Application.Order;
 using EShop.Application.Product;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EShop.Application;
 
+[ExcludeFromCodeCoverage]
 public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)

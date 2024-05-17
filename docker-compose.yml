@@ -15,17 +15,17 @@
     volumes:
       - ./volumes/eshop-db-data:/var/lib/postgresql/data
       
-#  eshop.presentation:
-#    image: eshop.presentation
-#    ports:
-#      - "5000:8080"
-#    restart: unless-stopped
-#    build:
-#      context: .
-#      dockerfile: EShop.Presentation/Dockerfile
-#    depends_on:
-#      eshop.db:
-#        condition: service_healthy   
+  eshop.presentation:
+    image: eshop.presentation
+    ports:
+      - "5000:8080"
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: EShop.Presentation/Dockerfile
+    depends_on:
+      eshop.db:
+        condition: service_healthy   
   
   eshop.seq:
     image: datalust/seq:latest

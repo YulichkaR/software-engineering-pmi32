@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using EShop.Application.Order;
 using EShop.Application.Product;
 using EShop.Application.ProductType;
@@ -6,6 +7,7 @@ using EShop.Application.User;
 
 namespace EShop.Application;
 
+[ExcludeFromCodeCoverage]
 public class ApplicationMapper : Profile
 {
     public ApplicationMapper()
