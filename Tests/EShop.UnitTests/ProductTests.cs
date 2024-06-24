@@ -34,12 +34,36 @@ public class ProductTests
         _productRepository.GetAllBySpecificationAsync(Arg.Any<GetPagedProductsSpecification>()).Returns(Task.FromResult(products));
         
         // Act
-        List<GetProductDto> result = await _productServices.GetProducts(page, pageSize);
+        List<GetProductDto> result = await _productServices.GetProducts(page, pageSize, null);
         
         // Assert
         result.Should().NotBeNull();
         result.Count.Should().BeLessThan(pageSize);
         result.Count.Should().Be(products.Count);
+    }
+
+    [Fact]
+    public async Task Test_Test()
+    {
+        //  Arrange 
+        List<Domain.Models.Product> products = new()
+        {
+            new() { Id = Guid.NewGuid(), Description = "Test" },
+            new() { Id = Guid.NewGuid(), Description = "Product2" }
+        };
+        int page = 1;
+        int pageSize = 10;
+        var search = "Test";
+        _productRepository.GetAllBySpecificationAsync(Arg.Any<GetPagedProductsSpecification>()).Returns(Task.FromResult(products));
+        //Act 
+        
+        var result = await _productServices.GetProducts(page, pageSize, search);
+        //Assert
+        Assert.NotEmpty(result);
+        Assert.Contains(search, result[0].Description);
+        Assert.Equal(result[0].Description, products[0].Description);
+        
+        
     }
     
     [Fact]

@@ -17,7 +17,7 @@ namespace EShop.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -68,6 +68,43 @@ namespace EShop.Infrastructure.Migrations
                     b.ToTable("BasketItems");
                 });
 
+            modelBuilder.Entity("EShop.Domain.Models.Color", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Colors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("1c247abf-5272-4dae-8c88-5ff2660006fd"),
+                            Name = "Red"
+                        },
+                        new
+                        {
+                            Id = new Guid("93685d24-8c0f-41af-8191-e7454e2011bd"),
+                            Name = "Blue"
+                        },
+                        new
+                        {
+                            Id = new Guid("90d0d40f-7b31-48e5-a466-de3a33485861"),
+                            Name = "Green"
+                        },
+                        new
+                        {
+                            Id = new Guid("6f35bf79-1715-4d57-8c3d-df89c23a8da5"),
+                            Name = "Yellow"
+                        });
+                });
+
             modelBuilder.Entity("EShop.Domain.Models.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -116,6 +153,9 @@ namespace EShop.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
+                    b.Property<Guid>("ProductColorId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("ProductTypeId")
                         .HasColumnType("uuid");
 
@@ -123,6 +163,8 @@ namespace EShop.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductColorId");
 
                     b.HasIndex("ProductTypeId");
 
@@ -164,19 +206,34 @@ namespace EShop.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("45fc4a83-b149-4db1-9706-fb3bcc9b9d2c"),
+                            Id = new Guid("98463254-7200-43f8-90ce-d4d3f2ba3f3d"),
                             Name = "Electronics"
                         },
                         new
                         {
-                            Id = new Guid("1cc9e528-9349-40d2-b646-afa6c526622a"),
+                            Id = new Guid("e0714b56-152c-4d83-a556-7679e42b142a"),
                             Name = "Clothing"
                         },
                         new
                         {
-                            Id = new Guid("a6423dc8-4465-4afd-b00a-577ff7e6b816"),
+                            Id = new Guid("b74f17c4-1c97-4397-8979-fe757bf27929"),
                             Name = "Books"
                         });
+                });
+
+            modelBuilder.Entity("EShop.Domain.Models.Test", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tests");
                 });
 
             modelBuilder.Entity("EShop.Domain.Models.User", b =>
@@ -273,14 +330,14 @@ namespace EShop.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a5e08d81-94ac-46dc-b27a-5e48f495e62c"),
+                            Id = new Guid("693d1811-3298-4b10-ae66-4e39e510acb6"),
                             ConcurrencyStamp = "ADMIN",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("3596a3f2-3e53-4857-a2d8-b39fa148c7d2"),
+                            Id = new Guid("cfbdf29d-1287-49be-a5de-02b4f7985ce7"),
                             ConcurrencyStamp = "USER",
                             Name = "User",
                             NormalizedName = "USER"
@@ -445,11 +502,19 @@ namespace EShop.Infrastructure.Migrations
 
             modelBuilder.Entity("EShop.Domain.Models.Product", b =>
                 {
+                    b.HasOne("EShop.Domain.Models.Color", "Color")
+                        .WithMany("Products")
+                        .HasForeignKey("ProductColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EShop.Domain.Models.ProductType", "Type")
                         .WithMany()
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Color");
 
                     b.Navigation("Type");
                 });
@@ -527,6 +592,11 @@ namespace EShop.Infrastructure.Migrations
             modelBuilder.Entity("EShop.Domain.Models.Basket", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("EShop.Domain.Models.Color", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("EShop.Domain.Models.Product", b =>

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace EShop.Domain.Models;
 
@@ -10,7 +11,12 @@ public class Product : IBaseEntity<Guid>
     public string Description { get; set; } = null!;
     public string Img { get; set; } = null!;
     public Guid ProductTypeId { get; set; }
+    [ForeignKey(nameof(Models.Color))]
     
+    public Guid ProductColorId { get; set; }
+
+    [JsonIgnore]
+    public Color Color { get; set; } = null!;
     [JsonIgnore]
     public ProductType Type { get; set; } = null!;
     [JsonIgnore]

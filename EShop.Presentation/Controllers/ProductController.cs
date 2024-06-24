@@ -1,11 +1,13 @@
 ﻿using System.Security.Claims;
 using EShop.Application.Product;
 using EShop.Application.ProductType;
+using EShop.Infrastructure.Database;
 using EShop.Presentation.Models;
 using EShop.Presentation.Models.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Presentation.Controllers;
 
@@ -13,16 +15,18 @@ public class ProductController : Controller
 {
     private readonly IProductService _productService;
     private readonly IProductTypeService _productTypeService;
+    private readonly ApplicationDbContext _context;
 
-    public ProductController(IProductService productService, IProductTypeService productTypeService)
+    public ProductController(IProductService productService, IProductTypeService productTypeService, ApplicationDbContext context)
     {
         _productService = productService;
         _productTypeService = productTypeService;
+        _context = context;
     }
 
-    public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+    public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string? search = null)
     {
-        var products = await _productService.GetProducts(page,pageSize);
+        var products = await _productService.GetProducts(page,pageSize,search);
         var productCount = await _productService.GetTotalProducts();
         var viewModel = new ProductListVewModel
         {
@@ -56,11 +60,19 @@ public class ProductController : Controller
     {
         var model = new CreateProductViewModel();
         var productTypes = await _productTypeService.GetProductTypes();
+        var colors = await _context.Colors.AsNoTracking().ToListAsync();
+        model.ClothColor = colors.ConvertAll(c => new SelectListItem
+        {
+            Value = c.Id.ToString(),
+            Text = c.Name
+        });
         model.ProductTypes = productTypes.ConvertAll(pt => new SelectListItem
         {
             Value = pt.Id.ToString(),
             Text = pt.Name
         });
+        var clothingProductTypeId = productTypes.FirstOrDefault(pt => pt.Name == "Clothing")?.Id;
+        model.ProductTypeId = clothingProductTypeId ?? Guid.Empty;
 
         return View(model);
     }
@@ -80,6 +92,7 @@ public class ProductController : Controller
             Quantity = model.Quantity,
             Description = model.Description,
             ProductTypeId = model.ProductTypeId,
+            ProductColorId = model.ProductColorId,
             ImgFile = img
         };
         await _productService.CreateProduct(productDto);

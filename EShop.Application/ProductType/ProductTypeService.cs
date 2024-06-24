@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EShop.Domain.Models;
 
 namespace EShop.Application.ProductType;
 
@@ -12,6 +13,7 @@ public class ProductTypeService : IProductTypeService
         _productTypeRepository = productTypeRepository;
         _mapper = mapper;
     }
+
     public async Task<List<Domain.Models.ProductType>> GetProductTypes()
     {
         return await _productTypeRepository.GetAllAsync();

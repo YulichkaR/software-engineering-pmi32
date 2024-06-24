@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EShop.Application.Order;
 using EShop.Domain.Models;
 using EShop.Domain.Specification;
 
@@ -25,13 +26,14 @@ public class ProductService : IProductService
             throw new Exception("Product not found");
         }
         
+        
         var productDto = _mapper.Map<GetProductDto>(product);
         return productDto;
     }
 
-    public async Task<List<GetProductDto>> GetProducts(int page, int pageSize)
+    public async Task<List<GetProductDto>> GetProducts(int page, int pageSize, string? search)
     {
-        var products =  await _repository.GetAllBySpecificationAsync(new GetPagedProductsSpecification(page, pageSize));
+        var products =  await _repository.GetAllBySpecificationAsync(new GetPagedProductsSpecification(page, pageSize, search));
         var productsDto = products.ConvertAll(p => new GetProductDto
         {
             Id = p.Id,

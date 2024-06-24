@@ -9,4 +9,5 @@ public record CreateProductDto
     public string Description { get; set; } = null!;
     public IFormFile? ImgFile { get; set; }
     public Guid ProductTypeId { get; set; }
+    public Guid ProductColorId { get; set; }
 };

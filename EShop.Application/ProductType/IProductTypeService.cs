@@ -1,4 +1,5 @@
-﻿namespace EShop.Application.ProductType;
+﻿
+namespace EShop.Application.ProductType;
 
 public interface IProductTypeService
 {

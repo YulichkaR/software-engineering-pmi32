@@ -12,6 +12,9 @@ public record CreateProductViewModel
     public int Quantity { get; set; }
     public string Description { get; set; }
     public Guid ProductTypeId { get; set; }
+    public Guid ProductColorId { get; set; }
     [ValidateNever]
     public List<SelectListItem> ProductTypes { get; set; }
+    [ValidateNever]
+    public List<SelectListItem> ClothColor { get; set; }
 }

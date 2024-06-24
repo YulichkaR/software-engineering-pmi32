@@ -26,6 +26,12 @@
     </div>
 }
 <h1>Product List</h1>
+<div>
+    @* <form method="get" asp-action="Test" asp-controller="Product"> *@
+    @*     <input class="form-control" asp-for="Search" type="text"> *@
+    @*     <button type="submit">Search</button> *@
+    @* </form> *@
+</div>
 @if(Model.Products.Count == 0)
 {
     <p>No products found</p>
@@ -33,6 +39,7 @@
 else
 {
     <div class="row">
+        
         @foreach (var product in Model.Products)
         {
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">

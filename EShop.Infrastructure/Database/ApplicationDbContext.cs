@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Color = System.Drawing.Color;
 
 namespace EShop.Infrastructure.Database;
 
@@ -20,6 +21,14 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Models.User, UserTy
             new() {Id = Guid.NewGuid(), Name = "Books"}
         };
         modelBuilder.Entity<Domain.Models.ProductType>().HasData(productTypes);
+
+        modelBuilder.Entity<Domain.Models.Color>().HasData(new List<Domain.Models.Color>
+        {
+            new() { Id = Guid.NewGuid(), Name = "Red" },
+            new() { Id = Guid.NewGuid(), Name = "Blue" },
+            new() { Id = Guid.NewGuid(), Name = "Green" },
+            new() { Id = Guid.NewGuid(), Name = "Yellow" },
+        });
         modelBuilder.Entity<UserType>().HasData(new List<UserType>
         {
             new()
@@ -49,4 +58,6 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Models.User, UserTy
     public DbSet<BasketItem> BasketItems { get; set; }
     public DbSet<Domain.Models.Basket> Baskets { get; set; }
     public DbSet<ProductLike> ProductLikes { get; set; }
+    public DbSet<Domain.Models.Color> Colors { get; set; }
+    public DbSet<Test> Tests { get; set; }
 }
